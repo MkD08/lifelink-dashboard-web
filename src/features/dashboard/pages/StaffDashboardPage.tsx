@@ -3,9 +3,14 @@ import { useNavigate } from "react-router-dom";
 import { requestsService } from "../../requests/services/requests.service";
 import { donorsService } from "../../donors/services/donors.service";
 
+import type { BloodRequest } from "../../requests/types/request.types";
+import type { Donor } from "../../donors/types/donor.types";
+
 export default function StaffDashboardPage() {
   const [loading, setLoading] = useState(true);
-  const [requests, setRequests] = useState<any[]>([]);
+
+  const [requests, setRequests] = useState<BloodRequest[]>([]);
+  const [donneurs, setDonneurs] = useState<Donor[]>([]);
 
   const [stats, setStats] = useState({
     demandesUrgentes: 0,
@@ -29,15 +34,19 @@ export default function StaffDashboardPage() {
         (d) => d.statut === "en attente"
       ).length;
 
-      let donneurs = [];
+      let donneursData: Donor[] = [];
+
       try {
-        donneurs = await donorsService.getAllDonors();
-      } catch {}
+        donneursData = await donorsService.getAllDonors();
+        setDonneurs(donneursData);
+      } catch {
+        donneursData = [];
+      }
 
-      const donneursDisponibles = donneurs.length;
+      const donneursDisponibles = donneursData.length;
 
-      const groupesAVerifier = donneurs.filter(
-        (d: any) => d.statut_groupe_sanguin !== "verifie"
+      const groupesAVerifier = donneursData.filter(
+        (d) => d.statut_groupe_sanguin !== "verifie"
       ).length;
 
       setStats({
@@ -146,7 +155,7 @@ export default function StaffDashboardPage() {
             {requests.slice(0, 5).map((req) => (
               <div
                 key={req.id_demande}
-                className="flex items-center justify-between rounded-2xl border border-slate-200 px-4 py-3"
+                className="flex items-center justify-between rounded-2xl border border-slate-200 px-4 py-3 dark:border-slate-700"
               >
                 <div>
                   <p className="font-semibold text-slate-900 dark:text-white">

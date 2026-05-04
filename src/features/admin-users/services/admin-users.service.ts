@@ -1,5 +1,4 @@
 import { AxiosError } from "axios";
-
 import { api } from "../../../lib/axios";
 
 import type {
@@ -52,6 +51,7 @@ export const adminUsersService = {
         error,
         "Impossible de charger les utilisateurs"
       );
+      return []; // 🔥 FIX OBLIGATOIRE
     }
   },
 
@@ -75,6 +75,7 @@ export const adminUsersService = {
         error,
         "Impossible de charger l'utilisateur"
       );
+      throw error; // 🔥 FIX
     }
   },
 
