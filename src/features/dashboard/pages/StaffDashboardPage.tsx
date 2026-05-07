@@ -10,7 +10,6 @@ export default function StaffDashboardPage() {
   const [loading, setLoading] = useState(true);
 
   const [requests, setRequests] = useState<BloodRequest[]>([]);
-  const [donneurs, setDonneurs] = useState<Donor[]>([]);
 
   const [stats, setStats] = useState({
     demandesUrgentes: 0,
@@ -38,7 +37,7 @@ export default function StaffDashboardPage() {
 
       try {
         donneursData = await donorsService.getAllDonors();
-        setDonneurs(donneursData);
+        
       } catch {
         donneursData = [];
       }
