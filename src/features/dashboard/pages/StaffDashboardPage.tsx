@@ -20,7 +20,7 @@ export default function StaffDashboardPage() {
   const navigate = useNavigate();
 
   // ==============================
-  // 🔥 LOAD DATA
+  // LOAD DATA
   // ==============================
   const load = async () => {
     try {
