@@ -8,8 +8,6 @@ import { exportToCsv, exportToPdf } from "../../../utils/export";
 import type { BloodStock } from "../types/stock.types";
 
 export default function StocksPage() {
-  // console.log(exportToPdf);
-  // console.log("EXPORT FILE LOADED");
   const { user } = useAuth();
   const { showToast } = useToast();
 
@@ -64,8 +62,14 @@ export default function StocksPage() {
     });
   }, [stocks, search]);
 
-  const totalQuantity = stocks.reduce((sum, stock) => sum + stock.quantite, 0);
-  const criticalCount = stocks.filter((stock) => stock.quantite === 0).length;
+  const totalQuantity = stocks.reduce(
+    (sum, stock) => sum + stock.quantite,
+    0
+  );
+
+  const criticalCount = stocks.filter(
+    (stock) => stock.quantite === 0
+  ).length;
 
   const handleUpdateSubmit = async (quantite: number) => {
     if (!selectedStock?.centre_id) return;
@@ -85,7 +89,9 @@ export default function StocksPage() {
       showToast("Stock mis à jour avec succès.", "success");
     } catch (err) {
       const message =
-        err instanceof Error ? err.message : "Impossible de mettre à jour le stock";
+        err instanceof Error
+          ? err.message
+          : "Impossible de mettre à jour le stock";
 
       setError(message);
       showToast(message, "error");
@@ -95,22 +101,38 @@ export default function StocksPage() {
   };
 
   const stockColumns = [
-    { header: "Centre ID", accessor: (s: BloodStock) => s.centre_id ?? "—" },
-    { header: "Centre", accessor: (s: BloodStock) => s.centre_nom || "—" },
-    { header: "Ville", accessor: (s: BloodStock) => s.ville || "—" },
-    { header: "Groupe sanguin", accessor: (s: BloodStock) => s.groupe_sanguin },
-    { header: "Quantité", accessor: (s: BloodStock) => s.quantite },
+    {
+      header: "Centre ID",
+      accessor: (s: BloodStock) => s.centre_id ?? "—",
+    },
+    {
+      header: "Centre",
+      accessor: (s: BloodStock) => s.centre_nom || "—",
+    },
+    {
+      header: "Ville",
+      accessor: (s: BloodStock) => s.ville || "—",
+    },
+    {
+      header: "Groupe sanguin",
+      accessor: (s: BloodStock) => s.groupe_sanguin,
+    },
+    {
+      header: "Quantité",
+      accessor: (s: BloodStock) => s.quantite,
+    },
   ];
 
   return (
     <div className="space-y-6">
-      <div className="rounded-[24px] border border-slate-200 bg-white dark:bg-slate-900 p-6 shadow-md">
+      <div className="rounded-[24px] border border-slate-200 bg-white p-6 shadow-md dark:border-slate-700 dark:bg-slate-900">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div>
             <h2 className="text-2xl font-extrabold text-slate-900 dark:text-white">
               Stocks sanguins
             </h2>
-            <p className="mt-2 text-slate-500">
+
+            <p className="mt-2 text-slate-500 dark:text-slate-400">
               Vue globale des stocks par centre et groupe sanguin.
             </p>
           </div>
@@ -121,19 +143,44 @@ export default function StocksPage() {
               placeholder="Rechercher par centre, ville, groupe..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="flex-1 rounded-2xl border border-slate-300 px-4 py-3 outline-none focus:border-red-500"
+              className="
+                flex-1
+                rounded-2xl
+                border border-slate-300
+                bg-white
+                px-4 py-3
+                text-slate-900
+                outline-none
+                focus:border-red-500
+
+                dark:border-slate-700
+                dark:bg-slate-800
+                dark:text-white
+                dark:placeholder:text-slate-400
+              "
             />
 
             <button
-              onClick={() => exportToCsv("stocks", filteredStocks, stockColumns)}
-              className="rounded-2xl border border-slate-300 px-4 py-3 font-semibold text-slate-700 hover:bg-slate-50"
+              onClick={() =>
+                exportToCsv(
+                  "stocks",
+                  filteredStocks,
+                  stockColumns
+                )
+              }
+              className="rounded-2xl border border-slate-300 px-4 py-3 font-semibold text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:hover:bg-slate-700"
             >
               Export CSV
             </button>
 
             <button
               onClick={() =>
-                exportToPdf("stocks", "Liste des stocks", filteredStocks, stockColumns)
+                exportToPdf(
+                  "stocks",
+                  "Liste des stocks",
+                  filteredStocks,
+                  stockColumns
+                )
               }
               className="rounded-2xl bg-red-600 px-4 py-3 font-bold text-white hover:bg-red-700"
             >
@@ -144,29 +191,41 @@ export default function StocksPage() {
       </div>
 
       <div className="grid gap-4 md:grid-cols-4">
-        <div className="rounded-[24px] border border-slate-200 bg-white dark:bg-slate-900 p-5 shadow-md">
-          <p className="text-sm text-slate-500">Total lignes stock</p>
+        <div className="rounded-[24px] border border-slate-200 bg-white p-5 shadow-md dark:border-slate-700 dark:bg-slate-900">
+          <p className="text-sm text-slate-500 dark:text-slate-400">
+            Total lignes stock
+          </p>
+
           <h3 className="mt-2 text-3xl font-extrabold text-slate-900 dark:text-white">
             {stocks.length}
           </h3>
         </div>
 
-        <div className="rounded-[24px] border border-slate-200 bg-white dark:bg-slate-900 p-5 shadow-md">
-          <p className="text-sm text-slate-500">Quantité totale</p>
+        <div className="rounded-[24px] border border-slate-200 bg-white p-5 shadow-md dark:border-slate-700 dark:bg-slate-900">
+          <p className="text-sm text-slate-500 dark:text-slate-400">
+            Quantité totale
+          </p>
+
           <h3 className="mt-2 text-3xl font-extrabold text-slate-900 dark:text-white">
             {totalQuantity}
           </h3>
         </div>
 
-        <div className="rounded-[24px] border border-slate-200 bg-white dark:bg-slate-900 p-5 shadow-md">
-          <p className="text-sm text-slate-500">Stocks critiques</p>
+        <div className="rounded-[24px] border border-slate-200 bg-white p-5 shadow-md dark:border-slate-700 dark:bg-slate-900">
+          <p className="text-sm text-slate-500 dark:text-slate-400">
+            Stocks critiques
+          </p>
+
           <h3 className="mt-2 text-3xl font-extrabold text-slate-900 dark:text-white">
             {criticalCount}
           </h3>
         </div>
 
-        <div className="rounded-[24px] border border-slate-200 bg-white dark:bg-slate-900 p-5 shadow-md">
-          <p className="text-sm text-slate-500">Résultats filtrés</p>
+        <div className="rounded-[24px] border border-slate-200 bg-white p-5 shadow-md dark:border-slate-700 dark:bg-slate-900">
+          <p className="text-sm text-slate-500 dark:text-slate-400">
+            Résultats filtrés
+          </p>
+
           <h3 className="mt-2 text-3xl font-extrabold text-slate-900 dark:text-white">
             {filteredStocks.length}
           </h3>
@@ -174,18 +233,24 @@ export default function StocksPage() {
       </div>
 
       {!loading && error && (
-        <div className="rounded-[24px] border border-red-200 bg-red-50 p-6 shadow-md">
-          <p className="font-semibold text-red-700">{error}</p>
+        <div className="rounded-[24px] border border-red-200 bg-red-50 p-6 shadow-md dark:border-red-800 dark:bg-red-950/40">
+          <p className="font-semibold text-red-700 dark:text-red-400">
+            {error}
+          </p>
         </div>
       )}
 
       {loading ? (
-        <div className="rounded-[24px] border border-slate-200 bg-white dark:bg-slate-900 p-10 text-center shadow-md">
-          <p className="text-slate-500">Chargement des stocks...</p>
+        <div className="rounded-[24px] border border-slate-200 bg-white p-10 text-center shadow-md dark:border-slate-700 dark:bg-slate-900">
+          <p className="text-slate-500 dark:text-slate-400">
+            Chargement des stocks...
+          </p>
         </div>
       ) : filteredStocks.length === 0 ? (
-        <div className="rounded-[24px] border border-slate-200 bg-white dark:bg-slate-900 p-10 text-center shadow-md">
-          <p className="text-slate-500">Aucun stock trouvé.</p>
+        <div className="rounded-[24px] border border-slate-200 bg-white p-10 text-center shadow-md dark:border-slate-700 dark:bg-slate-900">
+          <p className="text-slate-500 dark:text-slate-400">
+            Aucun stock trouvé.
+          </p>
         </div>
       ) : (
         <StocksTable

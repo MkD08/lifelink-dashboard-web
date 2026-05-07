@@ -143,13 +143,13 @@ export default function DonorsPage() {
 
   return (
     <div className="space-y-6">
-      <div className="rounded-[24px] border border-slate-200 bg-white dark:bg-slate-900 p-6 shadow-md">
+      <div className="rounded-[24px] border border-slate-200 bg-white p-6 shadow-md dark:border-slate-700 dark:bg-slate-900">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div>
             <h2 className="text-2xl font-extrabold text-slate-900 dark:text-white">
               Tous les donneurs
             </h2>
-            <p className="mt-2 text-slate-500">
+            <p className="mt-2 text-slate-500 dark:text-slate-400">
               Liste complète des donneurs enregistrés dans la plateforme.
             </p>
           </div>
@@ -160,14 +160,28 @@ export default function DonorsPage() {
               placeholder="Rechercher par nom, téléphone, ville, quartier, groupe..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="flex-1 rounded-2xl border border-slate-300 px-4 py-3 outline-none focus:border-red-500"
+              className="
+                flex-1
+                rounded-2xl
+                border border-slate-300
+                bg-white
+                px-4 py-3
+                text-slate-900
+                outline-none
+                focus:border-red-500
+
+                dark:border-slate-700
+                dark:bg-slate-800
+                dark:text-white
+                dark:placeholder:text-slate-400
+              "
             />
 
             <button
               onClick={() =>
                 exportToCsv("donneurs", filteredDonors, donorColumns)
               }
-              className="rounded-2xl border border-slate-300 px-4 py-3 font-semibold text-slate-700 hover:bg-slate-50"
+              className="rounded-2xl border border-slate-300 px-4 py-3 font-semibold text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:hover:bg-slate-700"
             >
               Export CSV
             </button>
@@ -190,29 +204,37 @@ export default function DonorsPage() {
       </div>
 
       <div className="grid gap-4 md:grid-cols-4">
-        <div className="rounded-[24px] border border-slate-200 bg-white dark:bg-slate-900 p-5 shadow-md">
-          <p className="text-sm text-slate-500">Total donneurs</p>
+        <div className="rounded-[24px] border border-slate-200 bg-white p-5 shadow-md dark:border-slate-700 dark:bg-slate-900">
+          <p className="text-sm text-slate-500 dark:text-slate-400">
+            Total donneurs
+          </p>
           <h3 className="mt-2 text-3xl font-extrabold text-slate-900 dark:text-white">
             {donors.length}
           </h3>
         </div>
 
-        <div className="rounded-[24px] border border-slate-200 bg-white dark:bg-slate-900 p-5 shadow-md">
-          <p className="text-sm text-slate-500">Groupes vérifiés</p>
+        <div className="rounded-[24px] border border-slate-200 bg-white p-5 shadow-md dark:border-slate-700 dark:bg-slate-900">
+          <p className="text-sm text-slate-500 dark:text-slate-400">
+            Groupes vérifiés
+          </p>
           <h3 className="mt-2 text-3xl font-extrabold text-slate-900 dark:text-white">
             {verifiedCount}
           </h3>
         </div>
 
-        <div className="rounded-[24px] border border-slate-200 bg-white dark:bg-slate-900 p-5 shadow-md">
-          <p className="text-sm text-slate-500">Profils complets</p>
+        <div className="rounded-[24px] border border-slate-200 bg-white p-5 shadow-md dark:border-slate-700 dark:bg-slate-900">
+          <p className="text-sm text-slate-500 dark:text-slate-400">
+            Profils complets
+          </p>
           <h3 className="mt-2 text-3xl font-extrabold text-slate-900 dark:text-white">
             {completeCount}
           </h3>
         </div>
 
-        <div className="rounded-[24px] border border-slate-200 bg-white dark:bg-slate-900 p-5 shadow-md">
-          <p className="text-sm text-slate-500">Résultats filtrés</p>
+        <div className="rounded-[24px] border border-slate-200 bg-white p-5 shadow-md dark:border-slate-700 dark:bg-slate-900">
+          <p className="text-sm text-slate-500 dark:text-slate-400">
+            Résultats filtrés
+          </p>
           <h3 className="mt-2 text-3xl font-extrabold text-slate-900 dark:text-white">
             {filteredDonors.length}
           </h3>
@@ -220,18 +242,24 @@ export default function DonorsPage() {
       </div>
 
       {!loading && error && (
-        <div className="rounded-[24px] border border-red-200 bg-red-50 p-6 shadow-md">
-          <p className="font-semibold text-red-700">{error}</p>
+        <div className="rounded-[24px] border border-red-200 bg-red-50 p-6 shadow-md dark:border-red-800 dark:bg-red-950/40">
+          <p className="font-semibold text-red-700 dark:text-red-400">
+            {error}
+          </p>
         </div>
       )}
 
       {loading ? (
-        <div className="rounded-[24px] border border-slate-200 bg-white dark:bg-slate-900 p-10 text-center shadow-md">
-          <p className="text-slate-500">Chargement des donneurs...</p>
+        <div className="rounded-[24px] border border-slate-200 bg-white p-10 text-center shadow-md dark:border-slate-700 dark:bg-slate-900">
+          <p className="text-slate-500 dark:text-slate-400">
+            Chargement des donneurs...
+          </p>
         </div>
       ) : filteredDonors.length === 0 ? (
-        <div className="rounded-[24px] border border-slate-200 bg-white dark:bg-slate-900 p-10 text-center shadow-md">
-          <p className="text-slate-500">Aucun donneur trouvé.</p>
+        <div className="rounded-[24px] border border-slate-200 bg-white p-10 text-center shadow-md dark:border-slate-700 dark:bg-slate-900">
+          <p className="text-slate-500 dark:text-slate-400">
+            Aucun donneur trouvé.
+          </p>
         </div>
       ) : (
         <DonorsTable

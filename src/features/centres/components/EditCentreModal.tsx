@@ -91,18 +91,34 @@ export default function EditCentreModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
-      <div className="w-full max-w-2xl rounded-[24px] bg-white dark:bg-slate-900 p-6 shadow-2xl">
+      <div className="w-full max-w-2xl rounded-[24px] bg-white p-6 shadow-2xl dark:bg-slate-900">
         <h3 className="text-xl font-extrabold text-slate-900 dark:text-white">
           Modifier le centre
         </h3>
 
-        <form onSubmit={handleSubmit} className="mt-6 grid gap-4 md:grid-cols-2">
+        <form
+          onSubmit={handleSubmit}
+          className="mt-6 grid gap-4 md:grid-cols-2"
+        >
           <input
             type="text"
             placeholder="Nom du centre"
             value={form.nom}
             onChange={(e) => updateField("nom", e.target.value)}
-            className="rounded-2xl border border-slate-300 px-4 py-3 outline-none focus:border-red-500"
+            className="
+              rounded-2xl
+              border border-slate-300
+              bg-white
+              px-4 py-3
+              text-slate-900
+              outline-none
+              focus:border-red-500
+
+              dark:border-slate-700
+              dark:bg-slate-800
+              dark:text-white
+              dark:placeholder:text-slate-400
+            "
             required
           />
 
@@ -111,7 +127,20 @@ export default function EditCentreModal({
             placeholder="Ville"
             value={form.ville}
             onChange={(e) => updateField("ville", e.target.value)}
-            className="rounded-2xl border border-slate-300 px-4 py-3 outline-none focus:border-red-500"
+            className="
+              rounded-2xl
+              border border-slate-300
+              bg-white
+              px-4 py-3
+              text-slate-900
+              outline-none
+              focus:border-red-500
+
+              dark:border-slate-700
+              dark:bg-slate-800
+              dark:text-white
+              dark:placeholder:text-slate-400
+            "
             required
           />
 
@@ -120,7 +149,21 @@ export default function EditCentreModal({
             placeholder="Adresse"
             value={form.adresse}
             onChange={(e) => updateField("adresse", e.target.value)}
-            className="rounded-2xl border border-slate-300 px-4 py-3 outline-none focus:border-red-500 md:col-span-2"
+            className="
+              rounded-2xl
+              border border-slate-300
+              bg-white
+              px-4 py-3
+              text-slate-900
+              outline-none
+              focus:border-red-500
+              md:col-span-2
+
+              dark:border-slate-700
+              dark:bg-slate-800
+              dark:text-white
+              dark:placeholder:text-slate-400
+            "
             required
           />
 
@@ -130,7 +173,20 @@ export default function EditCentreModal({
             placeholder="Latitude"
             value={form.latitude}
             onChange={(e) => updateField("latitude", e.target.value)}
-            className="rounded-2xl border border-slate-300 px-4 py-3 outline-none focus:border-red-500"
+            className="
+              rounded-2xl
+              border border-slate-300
+              bg-white
+              px-4 py-3
+              text-slate-900
+              outline-none
+              focus:border-red-500
+
+              dark:border-slate-700
+              dark:bg-slate-800
+              dark:text-white
+              dark:placeholder:text-slate-400
+            "
             required
           />
 
@@ -140,7 +196,20 @@ export default function EditCentreModal({
             placeholder="Longitude"
             value={form.longitude}
             onChange={(e) => updateField("longitude", e.target.value)}
-            className="rounded-2xl border border-slate-300 px-4 py-3 outline-none focus:border-red-500"
+            className="
+              rounded-2xl
+              border border-slate-300
+              bg-white
+              px-4 py-3
+              text-slate-900
+              outline-none
+              focus:border-red-500
+
+              dark:border-slate-700
+              dark:bg-slate-800
+              dark:text-white
+              dark:placeholder:text-slate-400
+            "
             required
           />
 
@@ -149,11 +218,25 @@ export default function EditCentreModal({
             placeholder="Téléphone"
             value={form.telephone}
             onChange={(e) => updateField("telephone", e.target.value)}
-            className="rounded-2xl border border-slate-300 px-4 py-3 outline-none focus:border-red-500 md:col-span-2"
+            className="
+              rounded-2xl
+              border border-slate-300
+              bg-white
+              px-4 py-3
+              text-slate-900
+              outline-none
+              focus:border-red-500
+              md:col-span-2
+
+              dark:border-slate-700
+              dark:bg-slate-800
+              dark:text-white
+              dark:placeholder:text-slate-400
+            "
           />
 
           {error && (
-            <div className="md:col-span-2 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700">
+            <div className="md:col-span-2 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700 dark:border-red-800 dark:bg-red-950/40 dark:text-red-400">
               {error}
             </div>
           )}
@@ -163,7 +246,7 @@ export default function EditCentreModal({
               type="button"
               onClick={onClose}
               disabled={loading}
-              className="flex-1 rounded-2xl border border-slate-300 px-4 py-3 font-semibold text-slate-700 hover:bg-slate-50 disabled:opacity-60"
+              className="flex-1 rounded-2xl border border-slate-300 px-4 py-3 font-semibold text-slate-700 hover:bg-slate-50 disabled:opacity-60 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:hover:bg-slate-700"
             >
               Annuler
             </button>

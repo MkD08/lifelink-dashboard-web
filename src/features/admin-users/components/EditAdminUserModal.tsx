@@ -100,7 +100,9 @@ export default function EditAdminUserModal({
       showToast("Utilisateur modifié avec succès.", "success");
     } catch (err) {
       const message =
-        err instanceof Error ? err.message : "Impossible de modifier l'utilisateur";
+        err instanceof Error
+          ? err.message
+          : "Impossible de modifier l'utilisateur";
 
       setError(message);
       showToast(message, "error");
@@ -111,18 +113,34 @@ export default function EditAdminUserModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
-      <div className="w-full max-w-3xl rounded-[24px] bg-white dark:bg-slate-900 p-6 shadow-2xl">
+      <div className="w-full max-w-3xl rounded-[24px] bg-white p-6 shadow-2xl dark:bg-slate-900">
         <h3 className="text-xl font-extrabold text-slate-900 dark:text-white">
           Modifier l’utilisateur
         </h3>
 
-        <form onSubmit={handleSubmit} className="mt-6 grid gap-4 md:grid-cols-2">
+        <form
+          onSubmit={handleSubmit}
+          className="mt-6 grid gap-4 md:grid-cols-2"
+        >
           <input
             type="text"
             placeholder="Nom"
             value={form.nom}
             onChange={(e) => updateField("nom", e.target.value)}
-            className="rounded-2xl border border-slate-300 px-4 py-3 outline-none focus:border-red-500"
+            className="
+              rounded-2xl
+              border border-slate-300
+              bg-white
+              px-4 py-3
+              text-slate-900
+              outline-none
+              focus:border-red-500
+
+              dark:border-slate-700
+              dark:bg-slate-800
+              dark:text-white
+              dark:placeholder:text-slate-400
+            "
           />
 
           <input
@@ -130,7 +148,20 @@ export default function EditAdminUserModal({
             placeholder="Prénom"
             value={form.prenom}
             onChange={(e) => updateField("prenom", e.target.value)}
-            className="rounded-2xl border border-slate-300 px-4 py-3 outline-none focus:border-red-500"
+            className="
+              rounded-2xl
+              border border-slate-300
+              bg-white
+              px-4 py-3
+              text-slate-900
+              outline-none
+              focus:border-red-500
+
+              dark:border-slate-700
+              dark:bg-slate-800
+              dark:text-white
+              dark:placeholder:text-slate-400
+            "
           />
 
           <input
@@ -138,7 +169,20 @@ export default function EditAdminUserModal({
             placeholder="Téléphone"
             value={form.telephone}
             onChange={(e) => updateField("telephone", e.target.value)}
-            className="rounded-2xl border border-slate-300 px-4 py-3 outline-none focus:border-red-500"
+            className="
+              rounded-2xl
+              border border-slate-300
+              bg-white
+              px-4 py-3
+              text-slate-900
+              outline-none
+              focus:border-red-500
+
+              dark:border-slate-700
+              dark:bg-slate-800
+              dark:text-white
+              dark:placeholder:text-slate-400
+            "
           />
 
           <input
@@ -146,7 +190,20 @@ export default function EditAdminUserModal({
             placeholder="Email"
             value={form.email}
             onChange={(e) => updateField("email", e.target.value)}
-            className="rounded-2xl border border-slate-300 px-4 py-3 outline-none focus:border-red-500"
+            className="
+              rounded-2xl
+              border border-slate-300
+              bg-white
+              px-4 py-3
+              text-slate-900
+              outline-none
+              focus:border-red-500
+
+              dark:border-slate-700
+              dark:bg-slate-800
+              dark:text-white
+              dark:placeholder:text-slate-400
+            "
           />
 
           <input
@@ -154,7 +211,20 @@ export default function EditAdminUserModal({
             placeholder="Ville"
             value={form.ville}
             onChange={(e) => updateField("ville", e.target.value)}
-            className="rounded-2xl border border-slate-300 px-4 py-3 outline-none focus:border-red-500"
+            className="
+              rounded-2xl
+              border border-slate-300
+              bg-white
+              px-4 py-3
+              text-slate-900
+              outline-none
+              focus:border-red-500
+
+              dark:border-slate-700
+              dark:bg-slate-800
+              dark:text-white
+              dark:placeholder:text-slate-400
+            "
           />
 
           <input
@@ -162,16 +232,45 @@ export default function EditAdminUserModal({
             placeholder="Quartier"
             value={form.quartier}
             onChange={(e) => updateField("quartier", e.target.value)}
-            className="rounded-2xl border border-slate-300 px-4 py-3 outline-none focus:border-red-500"
+            className="
+              rounded-2xl
+              border border-slate-300
+              bg-white
+              px-4 py-3
+              text-slate-900
+              outline-none
+              focus:border-red-500
+
+              dark:border-slate-700
+              dark:bg-slate-800
+              dark:text-white
+              dark:placeholder:text-slate-400
+            "
           />
 
           <select
             value={form.role_id}
             onChange={(e) => updateField("role_id", e.target.value)}
-            className="rounded-2xl border border-slate-300 px-4 py-3 outline-none focus:border-red-500"
+            className="
+              rounded-2xl
+              border border-slate-300
+              bg-white
+              px-4 py-3
+              text-slate-900
+              outline-none
+              focus:border-red-500
+
+              dark:border-slate-700
+              dark:bg-slate-800
+              dark:text-white
+            "
           >
             {roles.map((role) => (
-              <option key={role.value} value={role.value}>
+              <option
+                key={role.value}
+                value={role.value}
+                className="dark:bg-slate-800 dark:text-white"
+              >
                 {role.label}
               </option>
             ))}
@@ -182,7 +281,20 @@ export default function EditAdminUserModal({
             placeholder="Centre ID"
             value={form.centre_id}
             onChange={(e) => updateField("centre_id", e.target.value)}
-            className="rounded-2xl border border-slate-300 px-4 py-3 outline-none focus:border-red-500"
+            className="
+              rounded-2xl
+              border border-slate-300
+              bg-white
+              px-4 py-3
+              text-slate-900
+              outline-none
+              focus:border-red-500
+
+              dark:border-slate-700
+              dark:bg-slate-800
+              dark:text-white
+              dark:placeholder:text-slate-400
+            "
           />
 
           <input
@@ -190,34 +302,67 @@ export default function EditAdminUserModal({
             placeholder="Groupe sanguin"
             value={form.groupe_sanguin}
             onChange={(e) => updateField("groupe_sanguin", e.target.value)}
-            className="rounded-2xl border border-slate-300 px-4 py-3 outline-none focus:border-red-500"
+            className="
+              rounded-2xl
+              border border-slate-300
+              bg-white
+              px-4 py-3
+              text-slate-900
+              outline-none
+              focus:border-red-500
+
+              dark:border-slate-700
+              dark:bg-slate-800
+              dark:text-white
+              dark:placeholder:text-slate-400
+            "
           />
 
           <select
             value={form.statut_groupe_sanguin}
-            onChange={(e) => updateField("statut_groupe_sanguin", e.target.value)}
-            className="rounded-2xl border border-slate-300 px-4 py-3 outline-none focus:border-red-500"
+            onChange={(e) =>
+              updateField("statut_groupe_sanguin", e.target.value)
+            }
+            className="
+              rounded-2xl
+              border border-slate-300
+              bg-white
+              px-4 py-3
+              text-slate-900
+              outline-none
+              focus:border-red-500
+
+              dark:border-slate-700
+              dark:bg-slate-800
+              dark:text-white
+            "
           >
             {bloodStatuses.map((status) => (
-              <option key={status.value} value={status.value}>
+              <option
+                key={status.value}
+                value={status.value}
+                className="dark:bg-slate-800 dark:text-white"
+              >
                 {status.label}
               </option>
             ))}
           </select>
 
-          <label className="md:col-span-2 flex items-center gap-3 rounded-2xl border border-slate-300 px-4 py-3">
+          <label className="md:col-span-2 flex items-center gap-3 rounded-2xl border border-slate-300 px-4 py-3 dark:border-slate-700 dark:bg-slate-800">
             <input
               type="checkbox"
               checked={form.actif}
               onChange={(e) => updateField("actif", e.target.checked)}
+              className="h-4 w-4"
             />
-            <span className="text-sm font-semibold text-slate-700">
+
+            <span className="text-sm font-semibold text-slate-700 dark:text-white">
               Utilisateur actif
             </span>
           </label>
 
           {error && (
-            <div className="md:col-span-2 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700">
+            <div className="md:col-span-2 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700 dark:border-red-800 dark:bg-red-950/40 dark:text-red-400">
               {error}
             </div>
           )}
@@ -227,7 +372,7 @@ export default function EditAdminUserModal({
               type="button"
               onClick={onClose}
               disabled={loading}
-              className="flex-1 rounded-2xl border border-slate-300 px-4 py-3 font-semibold text-slate-700 hover:bg-slate-50 disabled:opacity-60"
+              className="flex-1 rounded-2xl border border-slate-300 px-4 py-3 font-semibold text-slate-700 hover:bg-slate-50 disabled:opacity-60 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:hover:bg-slate-700"
             >
               Annuler
             </button>

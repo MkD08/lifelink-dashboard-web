@@ -1,7 +1,12 @@
 import { useState, useEffect } from "react";
 import { collectesService } from "../services/collectes.service";
 
-export default function EditCollecteModal({ collecte, isOpen, onClose, onUpdated }: any) {
+export default function EditCollecteModal({
+  collecte,
+  isOpen,
+  onClose,
+  onUpdated,
+}: any) {
   const [form, setForm] = useState<any>({});
   const [file, setFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
@@ -32,29 +37,86 @@ export default function EditCollecteModal({ collecte, isOpen, onClose, onUpdated
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
-      <div className="w-full max-w-3xl rounded-[24px] bg-white dark:bg-slate-900 p-6 shadow-2xl">
-
+      <div className="w-full max-w-3xl rounded-[24px] bg-white p-6 shadow-2xl dark:bg-slate-900">
         <h3 className="text-xl font-extrabold text-slate-900 dark:text-white">
           Modifier la collecte
         </h3>
 
-        <div className="mt-6 grid md:grid-cols-2 gap-4">
+        <div className="mt-6 grid gap-4 md:grid-cols-2">
+          <input
+            className="
+              rounded-2xl
+              border border-slate-300
+              bg-white
+              px-4 py-3
+              text-slate-900
+              outline-none
+              focus:border-red-500
 
-          <input className="input" value={form.titre || ""}
-            onChange={e => setForm({...form, titre:e.target.value})} />
+              dark:border-slate-700
+              dark:bg-slate-800
+              dark:text-white
+              dark:placeholder:text-slate-400
+            "
+            value={form.titre || ""}
+            onChange={(e) =>
+              setForm({ ...form, titre: e.target.value })
+            }
+          />
 
-          <input className="input" value={form.ville || ""}
-            onChange={e => setForm({...form, ville:e.target.value})} />
+          <input
+            className="
+              rounded-2xl
+              border border-slate-300
+              bg-white
+              px-4 py-3
+              text-slate-900
+              outline-none
+              focus:border-red-500
 
-          <input type="file"
-            onChange={e => setFile(e.target.files?.[0] || null)} />
+              dark:border-slate-700
+              dark:bg-slate-800
+              dark:text-white
+              dark:placeholder:text-slate-400
+            "
+            value={form.ville || ""}
+            onChange={(e) =>
+              setForm({ ...form, ville: e.target.value })
+            }
+          />
 
+          <input
+            type="file"
+            className="
+              rounded-2xl
+              border border-slate-300
+              bg-white
+              px-4 py-3
+              text-slate-900
+              file:mr-4
+              file:rounded-xl
+              file:border-0
+              file:bg-red-600
+              file:px-4
+              file:py-2
+              file:font-semibold
+              file:text-white
+              outline-none
+
+              dark:border-slate-700
+              dark:bg-slate-800
+              dark:text-white
+            "
+            onChange={(e) =>
+              setFile(e.target.files?.[0] || null)
+            }
+          />
         </div>
 
         <div className="mt-6 flex gap-3">
           <button
             onClick={onClose}
-            className="flex-1 rounded-2xl border border-slate-300 px-4 py-3 font-semibold"
+            className="flex-1 rounded-2xl border border-slate-300 px-4 py-3 font-semibold text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-white"
           >
             Annuler
           </button>
@@ -66,7 +128,6 @@ export default function EditCollecteModal({ collecte, isOpen, onClose, onUpdated
             {loading ? "Modification..." : "Modifier"}
           </button>
         </div>
-
       </div>
     </div>
   );

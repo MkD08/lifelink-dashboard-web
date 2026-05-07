@@ -111,14 +111,29 @@ export default function CreateAlertModal({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/40 flex items-center justify-center">
-      <div className="bg-white dark:bg-slate-900 w-[520px] rounded-2xl p-6 space-y-4 shadow-xl">
-
-        <h2 className="text-xl font-bold">Créer une alerte</h2>
+    <div className="fixed inset-0 flex items-center justify-center bg-black/40 px-4">
+      <div className="w-full max-w-[520px] space-y-4 rounded-2xl bg-white p-6 shadow-xl dark:bg-slate-900">
+        <h2 className="text-xl font-bold text-slate-900 dark:text-white">
+          Créer une alerte
+        </h2>
 
         {/* TITRE */}
         <input
-          className="w-full border p-2 rounded-xl"
+          className="
+            w-full
+            rounded-2xl
+            border border-slate-300
+            bg-white
+            px-4 py-3
+            text-slate-900
+            outline-none
+            focus:border-red-500
+
+            dark:border-slate-700
+            dark:bg-slate-800
+            dark:text-white
+            dark:placeholder:text-slate-400
+          "
           placeholder="Titre"
           value={titre}
           onChange={(e) => setTitre(e.target.value)}
@@ -126,7 +141,21 @@ export default function CreateAlertModal({
 
         {/* MESSAGE */}
         <textarea
-          className="w-full border p-2 rounded-xl"
+          className="
+            w-full
+            rounded-2xl
+            border border-slate-300
+            bg-white
+            px-4 py-3
+            text-slate-900
+            outline-none
+            focus:border-red-500
+
+            dark:border-slate-700
+            dark:bg-slate-800
+            dark:text-white
+            dark:placeholder:text-slate-400
+          "
           placeholder="Message"
           value={message}
           onChange={(e) => setMessage(e.target.value)}
@@ -134,18 +163,62 @@ export default function CreateAlertModal({
 
         {/* TYPE */}
         <select
-          className="w-full border p-2 rounded-xl"
+          className="
+            w-full
+            rounded-2xl
+            border border-slate-300
+            bg-white
+            px-4 py-3
+            text-slate-900
+            outline-none
+            focus:border-red-500
+
+            dark:border-slate-700
+            dark:bg-slate-800
+            dark:text-white
+          "
           value={type}
           onChange={(e) => setType(e.target.value)}
         >
-          <option value="urgent">Urgent</option>
-          <option value="warning">Warning</option>
-          <option value="info">Info</option>
+          <option
+            value="urgent"
+            className="dark:bg-slate-800 dark:text-white"
+          >
+            Urgent
+          </option>
+
+          <option
+            value="warning"
+            className="dark:bg-slate-800 dark:text-white"
+          >
+            Warning
+          </option>
+
+          <option
+            value="info"
+            className="dark:bg-slate-800 dark:text-white"
+          >
+            Info
+          </option>
         </select>
 
         {/* GROUPE */}
         <input
-          className="w-full border p-2 rounded-xl"
+          className="
+            w-full
+            rounded-2xl
+            border border-slate-300
+            bg-white
+            px-4 py-3
+            text-slate-900
+            outline-none
+            focus:border-red-500
+
+            dark:border-slate-700
+            dark:bg-slate-800
+            dark:text-white
+            dark:placeholder:text-slate-400
+          "
           placeholder="Groupe sanguin (ex: O+)"
           value={groupe}
           onChange={(e) => setGroupe(e.target.value)}
@@ -153,7 +226,21 @@ export default function CreateAlertModal({
 
         {/* VILLE */}
         <input
-          className="w-full border p-2 rounded-xl"
+          className="
+            w-full
+            rounded-2xl
+            border border-slate-300
+            bg-white
+            px-4 py-3
+            text-slate-900
+            outline-none
+            focus:border-red-500
+
+            dark:border-slate-700
+            dark:bg-slate-800
+            dark:text-white
+            dark:placeholder:text-slate-400
+          "
           placeholder="Ville"
           value={ville}
           onChange={(e) => setVille(e.target.value)}
@@ -161,7 +248,20 @@ export default function CreateAlertModal({
 
         {/* CENTRE SELECT (SAFE) */}
         <select
-          className="w-full border p-2 rounded-xl"
+          className="
+            w-full
+            rounded-2xl
+            border border-slate-300
+            bg-white
+            px-4 py-3
+            text-slate-900
+            outline-none
+            focus:border-red-500
+
+            dark:border-slate-700
+            dark:bg-slate-800
+            dark:text-white
+          "
           value={centreId ?? ""}
           onChange={(e) =>
             setCentreId(
@@ -169,16 +269,30 @@ export default function CreateAlertModal({
             )
           }
         >
-          <option value="">Sélectionner un centre</option>
+          <option
+            value=""
+            className="dark:bg-slate-800 dark:text-white"
+          >
+            Sélectionner un centre
+          </option>
 
           {centres.length > 0 ? (
             centres.map((c) => (
-              <option key={c.id_centre} value={c.id_centre}>
+              <option
+                key={c.id_centre}
+                value={c.id_centre}
+                className="dark:bg-slate-800 dark:text-white"
+              >
                 {c.nom} ({c.ville})
               </option>
             ))
           ) : (
-            <option disabled>Aucun centre disponible</option>
+            <option
+              disabled
+              className="dark:bg-slate-800 dark:text-white"
+            >
+              Aucun centre disponible
+            </option>
           )}
         </select>
 
@@ -186,7 +300,7 @@ export default function CreateAlertModal({
         <div className="flex justify-end gap-2">
           <button
             onClick={onClose}
-            className="px-4 py-2 rounded-xl border"
+            className="rounded-xl border border-slate-300 px-4 py-2 text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-white"
           >
             Annuler
           </button>
@@ -194,12 +308,11 @@ export default function CreateAlertModal({
           <button
             onClick={handleSubmit}
             disabled={loading}
-            className="px-4 py-2 rounded-xl bg-red-600 text-white"
+            className="rounded-xl bg-red-600 px-4 py-2 text-white"
           >
             {loading ? "Création..." : "Créer"}
           </button>
         </div>
-
       </div>
     </div>
   );

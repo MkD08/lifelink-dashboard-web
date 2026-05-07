@@ -11,7 +11,9 @@ export default function AlertsPage() {
   const [loading, setLoading] = useState(true);
 
   const [search, setSearch] = useState("");
-  const [filter, setFilter] = useState<"all" | "urgent" | "warning" | "info">("all");
+  const [filter, setFilter] = useState<
+    "all" | "urgent" | "warning" | "info"
+  >("all");
 
   const [openCreate, setOpenCreate] = useState(false);
 
@@ -79,12 +81,14 @@ export default function AlertsPage() {
 
   return (
     <div className="space-y-6">
-
       {/* HEADER */}
-      <div className="rounded-[24px] bg-white dark:bg-slate-900 p-6 shadow-md border flex items-center justify-between">
+      <div className="flex items-center justify-between rounded-[24px] border border-slate-200 bg-white p-6 shadow-md dark:border-slate-700 dark:bg-slate-900">
         <div>
-          <h2 className="text-2xl font-extrabold">Alertes système</h2>
-          <p className="text-slate-500">
+          <h2 className="text-2xl font-extrabold text-slate-900 dark:text-white">
+            Alertes système
+          </h2>
+
+          <p className="text-slate-500 dark:text-slate-400">
             Gestion des alertes médicales en temps réel
           </p>
         </div>
@@ -98,88 +102,154 @@ export default function AlertsPage() {
       </div>
 
       {/* STATS */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
+        <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow dark:border-slate-700 dark:bg-slate-900">
+          <p className="text-slate-500 dark:text-slate-400">Total</p>
 
-        <div className="bg-white dark:bg-slate-900 p-4 rounded-2xl shadow border">
-          <p className="text-slate-500">Total</p>
-          <h3 className="text-2xl font-bold">{stats.total}</h3>
+          <h3 className="text-2xl font-bold text-slate-900 dark:text-white">
+            {stats.total}
+          </h3>
         </div>
 
-        <div className="bg-red-50 p-4 rounded-2xl border border-red-100">
-          <p className="text-red-600">Urgent</p>
-          <h3 className="text-2xl font-bold text-red-600">{stats.urgent}</h3>
+        <div className="rounded-2xl border border-red-100 bg-red-50 p-4 dark:border-red-900 dark:bg-red-950/40">
+          <p className="text-red-600 dark:text-red-400">Urgent</p>
+
+          <h3 className="text-2xl font-bold text-red-600 dark:text-red-400">
+            {stats.urgent}
+          </h3>
         </div>
 
-        <div className="bg-yellow-50 p-4 rounded-2xl border border-yellow-100">
-          <p className="text-yellow-700">Warning</p>
-          <h3 className="text-2xl font-bold text-yellow-700">{stats.warning}</h3>
+        <div className="rounded-2xl border border-yellow-100 bg-yellow-50 p-4 dark:border-yellow-900 dark:bg-yellow-950/40">
+          <p className="text-yellow-700 dark:text-yellow-400">Warning</p>
+
+          <h3 className="text-2xl font-bold text-yellow-700 dark:text-yellow-400">
+            {stats.warning}
+          </h3>
         </div>
 
-        <div className="bg-blue-50 p-4 rounded-2xl border border-blue-100">
-          <p className="text-blue-700">Info</p>
-          <h3 className="text-2xl font-bold text-blue-700">{stats.info}</h3>
+        <div className="rounded-2xl border border-blue-100 bg-blue-50 p-4 dark:border-blue-900 dark:bg-blue-950/40">
+          <p className="text-blue-700 dark:text-blue-400">Info</p>
+
+          <h3 className="text-2xl font-bold text-blue-700 dark:text-blue-400">
+            {stats.info}
+          </h3>
         </div>
       </div>
 
       {/* FILTERS */}
-      <div className="flex flex-col md:flex-row gap-3">
-
+      <div className="flex flex-col gap-3 md:flex-row">
         <input
-          className="border rounded-2xl px-4 py-2 flex-1"
+          className="
+            flex-1
+            rounded-2xl
+            border border-slate-300
+            bg-white
+            px-4 py-3
+            text-slate-900
+            outline-none
+            focus:border-red-500
+
+            dark:border-slate-700
+            dark:bg-slate-800
+            dark:text-white
+            dark:placeholder:text-slate-400
+          "
           placeholder="Rechercher alerte..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
 
         <select
-          className="border rounded-2xl px-4 py-2"
+          className="
+            rounded-2xl
+            border border-slate-300
+            bg-white
+            px-4 py-3
+            text-slate-900
+            outline-none
+            focus:border-red-500
+
+            dark:border-slate-700
+            dark:bg-slate-800
+            dark:text-white
+          "
           value={filter}
           onChange={(e) => setFilter(e.target.value as any)}
         >
-          <option value="all">Tous</option>
-          <option value="urgent">Urgent</option>
-          <option value="warning">Warning</option>
-          <option value="info">Info</option>
-        </select>
+          <option
+            value="all"
+            className="dark:bg-slate-800 dark:text-white"
+          >
+            Tous
+          </option>
 
+          <option
+            value="urgent"
+            className="dark:bg-slate-800 dark:text-white"
+          >
+            Urgent
+          </option>
+
+          <option
+            value="warning"
+            className="dark:bg-slate-800 dark:text-white"
+          >
+            Warning
+          </option>
+
+          <option
+            value="info"
+            className="dark:bg-slate-800 dark:text-white"
+          >
+            Info
+          </option>
+        </select>
       </div>
 
       {/* LIST */}
       {loading ? (
-        <div className="bg-white dark:bg-slate-900 p-10 rounded-2xl text-center shadow">
-          Chargement...
+        <div className="rounded-2xl bg-white p-10 text-center shadow dark:bg-slate-900">
+          <p className="text-slate-500 dark:text-slate-400">
+            Chargement...
+          </p>
         </div>
       ) : filteredAlerts.length === 0 ? (
-        <div className="bg-white dark:bg-slate-900 p-10 rounded-2xl text-center shadow">
-          Aucune alerte trouvée
+        <div className="rounded-2xl bg-white p-10 text-center shadow dark:bg-slate-900">
+          <p className="text-slate-500 dark:text-slate-400">
+            Aucune alerte trouvée
+          </p>
         </div>
       ) : (
         <div className="space-y-3">
-
           {filteredAlerts.map((a) => (
             <div
               key={a.id_alerte}
-              className="bg-white dark:bg-slate-900 border rounded-2xl p-4 flex justify-between shadow-sm"
+              className="flex justify-between rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-900"
             >
-
               {/* LEFT */}
               <div>
-                <h3 className="font-bold text-slate-900 dark:text-white">{a.titre}</h3>
+                <h3 className="font-bold text-slate-900 dark:text-white">
+                  {a.titre}
+                </h3>
 
-                <p className="text-sm text-slate-500 mt-1">
+                <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
                   {a.message}
                 </p>
 
-                <div className="text-xs text-slate-400 mt-2">
-                 {a.centre?.nom ?? "Sans centre"} • {a.ville} • {a.groupe_sanguin}
+                <div className="mt-2 text-xs text-slate-400 dark:text-slate-500">
+                  {a.centre?.nom ?? "Sans centre"} • {a.ville} •{" "}
+                  {a.groupe_sanguin}
                 </div>
               </div>
 
               {/* RIGHT */}
-              <span className={`h-fit px-3 py-1 rounded-full text-xs font-bold ${badge(a.type)}`}>
+              <span
+                className={`h-fit rounded-full px-3 py-1 text-xs font-bold ${badge(
+                  a.type
+                )}`}
+              >
                 {a.type}
               </span>
-
             </div>
           ))}
         </div>

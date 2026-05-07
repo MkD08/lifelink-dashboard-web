@@ -43,7 +43,7 @@ export default function CollecteCard({ collecte, onEdit, onDelete, onParticiper 
         </p>
 
         <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
-          📅 {new Date(collecte.date_collecte).toLocaleDateString()}
+           {new Date(collecte.date_collecte).toLocaleDateString()}
         </p>
 
         <div className="mt-2 flex justify-between text-sm text-slate-600 dark:text-slate-300">
