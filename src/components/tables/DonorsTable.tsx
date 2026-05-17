@@ -26,21 +26,21 @@ export default function DonorsTable({
 
   return (
     <div className="overflow-hidden rounded-[24px] border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-md">
-      <div className="overflow-x-auto">
-        <table className="min-w-full bg-white dark:bg-slate-900">
+      <div className="w-full overflow-x-auto scrollbar-thin">
+      <table className="min-w-[1300px] w-full bg-white dark:bg-slate-900">
 
           {/* HEADER */}
           <thead className="bg-slate-50 dark:bg-slate-800">
             <tr className="text-left text-sm text-slate-600 dark:text-slate-300">
-              <th className="px-5 py-4 font-semibold">Nom complet</th>
-              <th className="px-5 py-4 font-semibold">Téléphone</th>
-              <th className="px-5 py-4 font-semibold">Ville</th>
-              <th className="px-5 py-4 font-semibold">Groupe</th>
-              <th className="px-5 py-4 font-semibold">Statut groupe</th>
-              <th className="px-5 py-4 font-semibold">Profil complet</th>
-              <th className="px-5 py-4 font-semibold">Points</th>
-              <th className="px-5 py-4 font-semibold">Actif</th>
-              <th className="px-5 py-4 font-semibold">Actions</th>
+              <th className="whitespace-nowrap px-5 py-4 font-semibold">Nom complet</th>
+              <th className="whitespace-nowrap px-5 py-4 font-semibold">Téléphone</th>
+              <th className="whitespace-nowrap px-5 py-4 font-semibold">Ville</th>
+              <th className="whitespace-nowrap px-5 py-4 font-semibold">Groupe</th>
+              <th className="whitespace-nowrap px-5 py-4 font-semibold">Statut groupe</th>
+              <th className="whitespace-nowrap px-5 py-4 font-semibold">Profil complet</th>
+              <th className="whitespace-nowrap px-5 py-4 font-semibold">Points</th>
+              <th className="whitespace-nowrap px-5 py-4 font-semibold">Actif</th>
+              <th className="whitespace-nowrap px-5 py-4 font-semibold">Actions</th>
             </tr>
           </thead>
 
@@ -51,24 +51,24 @@ export default function DonorsTable({
                 key={donor.id_utilisateur}
                 className="border-t border-slate-100 dark:border-slate-800 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition"
               >
-                <td className="px-5 py-4 font-semibold text-slate-900 dark:text-white">
+                <td className="whitespace-nowrap px-5 py-4 font-semibold text-slate-900 dark:text-white">
                   {getFullName(donor)}
                 </td>
 
-                <td className="px-5 py-4">{donor.telephone || "—"}</td>
+                <td className="whitespace-nowrap px-5 py-4">{donor.telephone || "—"}</td>
 
-                <td className="px-5 py-4">
+                <td className="whitespace-nowrap px-5 py-4">
                   {[donor.ville, donor.quartier].filter(Boolean).join(" / ") || "—"}
                 </td>
 
-                <td className="px-5 py-4">
+                <td className="whitespace-nowrap px-5 py-4">
                   <span className="font-bold text-red-600 dark:text-red-400">
                     {donor.groupe_sanguin || "—"}
                   </span>
                 </td>
 
                 {/* STATUT GROUPE */}
-                <td className="px-5 py-4">
+                <td className="whitespace-nowrap px-5 py-4">
                   <span
                     className={`inline-flex rounded-full px-3 py-1 text-xs font-bold ${
                       donor.statut_groupe_sanguin === "verifie"
@@ -83,7 +83,7 @@ export default function DonorsTable({
                 </td>
 
                 {/* PROFIL */}
-                <td className="px-5 py-4">
+                <td className="whitespace-nowrap px-5 py-4">
                   <span
                     className={`inline-flex rounded-full px-3 py-1 text-xs font-bold ${
                       donor.profil_complet
@@ -95,10 +95,10 @@ export default function DonorsTable({
                   </span>
                 </td>
 
-                <td className="px-5 py-4">{donor.points ?? 0}</td>
+                <td className="whitespace-nowrap px-5 py-4">{donor.points ?? 0}</td>
 
                 {/* ACTIF */}
-                <td className="px-5 py-4">
+                <td className="whitespace-nowrap px-5 py-4">
                   <span
                     className={`inline-flex rounded-full px-3 py-1 text-xs font-bold ${
                       donor.actif
@@ -111,8 +111,8 @@ export default function DonorsTable({
                 </td>
 
                 {/* ACTIONS */}
-                <td className="px-5 py-4">
-                  <div className="flex gap-2">
+                <td className="whitespace-nowrap px-5 py-4">
+                <div className="flex flex-wrap gap-2">
 
                     <button
                       onClick={() => navigate(`/donors/${donor.id_utilisateur}`)}

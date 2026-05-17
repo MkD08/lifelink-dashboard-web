@@ -14,6 +14,7 @@ import CreateStaffPage from "../features/staff-management/pages/CreateStaffPage"
 import DonorDetailsPage from "../features/donors/pages/DonorDetailsPage";
 import ScanQrPage from "../features/donors/pages/ScanQrPage";
 import AdminUsersPage from "../features/admin-users/pages/AdminUsersPage";
+import DirectorsPage from "../features/directors/pages/DirectorsPage";
 import DashboardLayout from "../layouts/DashboardLayout";
 import AuthGuard from "../lib/auth-guard";
 import RoleGuard from "../lib/role-guard";
@@ -79,6 +80,14 @@ export default function AppRouter() {
   element={
     <RoleGuard allowedRoles={[1]}>
       <AdminUsersPage />
+    </RoleGuard>
+  }
+/>
+<Route
+  path="/directors"
+  element={
+    <RoleGuard allowedRoles={[1]}>
+      <DirectorsPage />
     </RoleGuard>
   }
 />

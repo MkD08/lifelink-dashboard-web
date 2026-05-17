@@ -15,17 +15,17 @@ export default function CentresTable({
 }: Props) {
   return (
     <div className="overflow-hidden rounded-[24px] border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-md">
-      <div className="overflow-x-auto">
-        <table className="min-w-full bg-white dark:bg-slate-900">
+      <div className="w-full overflow-x-auto scrollbar-thin">
+      <table className="min-w-[900px] w-full bg-white dark:bg-slate-900">
           
           {/* HEADER */}
           <thead className="bg-slate-50 dark:bg-slate-800">
             <tr className="text-left text-sm text-slate-600 dark:text-slate-300">
-              <th className="px-5 py-4 font-semibold">ID</th>
-              <th className="px-5 py-4 font-semibold">Nom</th>
-              <th className="px-5 py-4 font-semibold">Ville</th>
-              <th className="px-5 py-4 font-semibold">Adresse</th>
-              <th className="px-5 py-4 font-semibold">Téléphone</th>
+              <th className="whitespace-nowrap px-5 py-4 font-semibold">ID</th>
+              <th className="whitespace-nowrap px-5 py-4 font-semibold">Nom</th>
+              <th className="whitespace-nowrap px-5 py-4 font-semibold">Ville</th>
+              <th className="whitespace-nowrap px-5 py-4 font-semibold">Adresse</th>
+              <th className="whitespace-nowrap px-5 py-4 font-semibold">Téléphone</th>
               {isAdmin && <th className="px-5 py-4 font-semibold">Actions</th>}
             </tr>
           </thead>
@@ -41,10 +41,10 @@ export default function CentresTable({
                   #{centre.id_centre}
                 </td>
 
-                <td className="px-5 py-4">{centre.nom}</td>
-                <td className="px-5 py-4">{centre.ville || "—"}</td>
-                <td className="px-5 py-4">{centre.adresse || "—"}</td>
-                <td className="px-5 py-4">{centre.telephone || "—"}</td>
+                <td className="whitespace-nowrap px-5 py-4">{centre.nom}</td>
+                <td className="whitespace-nowrap px-5 py-4">{centre.ville || "—"}</td>
+                <td className="whitespace-nowrap px-5 py-4">{centre.adresse || "—"}</td>
+                <td className="whitespace-nowrap px-5 py-4">{centre.telephone || "—"}</td>
 
                 {isAdmin && (
                   <td className="px-5 py-4">

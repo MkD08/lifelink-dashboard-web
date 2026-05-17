@@ -36,8 +36,8 @@ export default function AdminUsersTable({
   return (
     <div className="w-full overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-md dark:border-slate-800 dark:bg-slate-900">
       {/* SCROLL HORIZONTAL */}
-      <div className="w-full overflow-x-auto">
-        <table className="w-full min-w-[1100px]">
+      <div className="w-full overflow-x-auto scrollbar-thin">
+      <table className="min-w-[1100px] w-full">
           {/* HEADER */}
           <thead className="bg-slate-50 dark:bg-slate-800">
             <tr className="text-left text-sm text-slate-600 dark:text-slate-300">

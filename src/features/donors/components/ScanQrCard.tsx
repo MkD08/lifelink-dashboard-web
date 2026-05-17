@@ -1,150 +1,468 @@
-import { useState, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
+
+import {
+  Html5QrcodeScanner,
+} from "html5-qrcode";
+
+import {
+  QrCode,
+  Camera,
+  X,
+} from "lucide-react";
+
 import { donorsService } from "../services/donors.service";
+
 import { useToast } from "../../auth/store/toast.store";
+
 import { useAuth } from "../../auth/store/auth.store";
 
 export default function ScanQrCard() {
   const { user } = useAuth();
 
-  const [qrData, setQrData] = useState("");
-  const [centreId, setCentreId] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [result, setResult] = useState<any>(null);
-
   const { showToast } = useToast();
 
-  // 🔥 AUTO SET CENTRE ID
+  const scannerRef =
+    useRef<any>(null);
+
+  const [qrData, setQrData] =
+    useState("");
+
+  const [centreId, setCentreId] =
+    useState("");
+
+  const [loading, setLoading] =
+    useState(false);
+
+  const [error, setError] =
+    useState("");
+
+  const [result, setResult] =
+    useState<any>(null);
+
+  const [cameraOpen, setCameraOpen] =
+    useState(false);
+
+  // =========================
+  // AUTO CENTRE ID
+  // =========================
   useEffect(() => {
     if (user?.centre_id) {
-      setCentreId(String(user.centre_id));
+      setCentreId(
+        String(user.centre_id)
+      );
     }
   }, [user]);
 
-  const isStaffOrDirector = user?.role_id === 2 || user?.role_id === 4;
+  const isStaffOrDirector =
+    user?.role_id === 3 ||
+    user?.role_id === 4;
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError("");
-    setResult(null);
-
-    try {
-      setLoading(true);
-
-      const data = await donorsService.scanQr(
-        qrData.trim(),
-        Number(centreId)
+  // =========================
+  // START CAMERA
+  // =========================
+  const startScanner =
+    async () => {
+      console.log(
+        "📷 START CAMERA"
       );
 
-      setResult(data);
-      setQrData("");
+      if (
+        scannerRef.current
+      ) {
+        console.log(
+          "⚠️ Scanner already running"
+        );
 
-      showToast(data?.message || "QR scanné avec succès.", "success");
-    } catch (err) {
-      const message =
-        err instanceof Error ? err.message : "Impossible de scanner le QR";
+        return;
+      }
 
-      setError(message);
-      showToast(message, "error");
-    } finally {
-      setLoading(false);
-    }
-  };
+      setCameraOpen(true);
+
+      showToast(
+        "Démarrage caméra...",
+        "success"
+      );
+
+      // 🔥 WAIT REACT RENDER
+      setTimeout(() => {
+        const scanner =
+          new Html5QrcodeScanner(
+            "qr-reader",
+            {
+              fps: 5,
+
+              qrbox: {
+                width: 250,
+                height: 250,
+              },
+
+              rememberLastUsedCamera:
+                true,
+            },
+            false
+          );
+
+        console.log(
+          "🔥 SCANNER INIT"
+        );
+
+        console.log(
+          "DOM:",
+          document.getElementById(
+            "qr-reader"
+          )
+        );
+
+        scanner.render(
+          async (
+            decodedText
+          ) => {
+            console.log(
+              "✅ QR DETECTED:",
+              decodedText
+            );
+
+            setQrData(
+              decodedText
+            );
+
+            await scanner.clear();
+
+            scannerRef.current =
+              null;
+
+            setCameraOpen(false);
+
+            showToast(
+              "QR détecté avec succès",
+              "success"
+            );
+
+            await handleScan(
+              decodedText
+            );
+          },
+
+          (
+            scanError
+          ) => {
+            console.log(
+              "📛 CAMERA DEBUG:",
+              scanError
+            );
+          }
+        );
+
+        scannerRef.current =
+          scanner;
+      }, 300);
+    };
+
+  // =========================
+  // STOP CAMERA
+  // =========================
+  const stopScanner =
+    async () => {
+      console.log(
+        "🛑 STOP CAMERA"
+      );
+
+      if (
+        scannerRef.current
+      ) {
+        await scannerRef.current.clear();
+
+        scannerRef.current =
+          null;
+      }
+
+      setCameraOpen(false);
+    };
+
+  // =========================
+  // HANDLE SCAN
+  // =========================
+  const handleScan =
+    async (qr?: string) => {
+      setError("");
+
+      setResult(null);
+
+      try {
+        setLoading(true);
+
+        console.log(
+          "🚀 SEND QR:",
+          qr || qrData
+        );
+
+        const data =
+          await donorsService.scanQr(
+            qr ||
+              qrData.trim(),
+
+            Number(
+              centreId
+            )
+          );
+
+        console.log(
+          "✅ SCAN RESULT:",
+          data
+        );
+
+        setResult(data);
+
+        setQrData("");
+
+        showToast(
+          data?.message ||
+            "QR scanné avec succès.",
+          "success"
+        );
+      } catch (err) {
+        console.error(
+          "❌ SCAN ERROR:",
+          err
+        );
+
+        const message =
+          err instanceof Error
+            ? err.message
+            : "Impossible de scanner le QR";
+
+        setError(message);
+
+        showToast(
+          message,
+          "error"
+        );
+      } finally {
+        setLoading(false);
+      }
+    };
+
+  // =========================
+  // MANUAL SUBMIT
+  // =========================
+  const handleSubmit =
+    async (
+      e: React.FormEvent
+    ) => {
+      e.preventDefault();
+
+      await handleScan();
+    };
 
   return (
-    <div className="rounded-[24px] border border-slate-200 bg-white dark:bg-slate-900 p-6 shadow-md">
-      <h2 className="text-2xl font-extrabold text-slate-900 dark:text-white">
-        Scanner un QR donneur
-      </h2>
+    <div className="rounded-[24px] border border-slate-200 bg-white p-6 shadow-md dark:border-slate-800 dark:bg-slate-900">
 
-      <p className="mt-2 text-slate-500">
-        Permet de valider un don à partir du QR du donneur.
-      </p>
+      {/* HEADER */}
+      <div>
+        <h2 className="text-2xl font-extrabold text-slate-900 dark:text-white">
+          Scanner QR donneur
+        </h2>
 
-      <form onSubmit={handleSubmit} className="mt-6 grid gap-4 md:grid-cols-2">
-        
-        {/* QR INPUT */}
-        <input
-          type="text"
-          placeholder="QR data"
-          value={qrData}
-          onChange={(e) => setQrData(e.target.value)}
-          className="rounded-2xl border border-slate-300 px-4 py-3 outline-none focus:border-red-500 md:col-span-2 dark:bg-slate-800 dark:border-slate-700 dark:text-white"
-          required
-        />
+        <p className="mt-2 text-slate-500 dark:text-slate-400">
+          Scanner un QR code
+          avec la caméra ou
+          saisir manuellement
+          l’identifiant du
+          donneur.
+        </p>
+      </div>
 
-        {/* CENTRE ID */}
-        <input
-          type="number"
-          placeholder="Centre ID"
-          value={centreId}
-          onChange={(e) => setCentreId(e.target.value)}
-          disabled={isStaffOrDirector}
-          className={`rounded-2xl border px-4 py-3 outline-none focus:border-red-500 
-            ${isStaffOrDirector 
-              ? "bg-slate-100 text-slate-400 cursor-not-allowed dark:bg-slate-800 dark:text-slate-500" 
-              : "border-slate-300 dark:bg-slate-800 dark:border-slate-700 dark:text-white"
-            }`}
-          required
-        />
+      {/* CAMERA SECTION */}
+      <div className="mt-6 rounded-[24px] border border-red-100 bg-red-50 p-6 dark:border-red-900/40 dark:bg-red-950/20">
 
-        {/* BUTTON */}
-        <button
-          type="submit"
-          disabled={loading}
-          className="rounded-2xl bg-red-600 px-4 py-3 font-bold text-white hover:bg-red-700 disabled:opacity-60 transition"
+        <div className="flex flex-col items-center justify-center text-center">
+
+          {/* ICON */}
+          <div className="mb-5 flex h-20 w-20 items-center justify-center rounded-full bg-red-600 shadow-lg">
+
+            <QrCode
+              size={42}
+              className="text-white"
+            />
+
+          </div>
+
+          <h3 className="text-xl font-extrabold text-slate-900 dark:text-white">
+            Scan QR avec caméra
+          </h3>
+
+          <p className="mt-2 max-w-md text-sm text-slate-500 dark:text-slate-400">
+            Utilisez la caméra
+            du téléphone ou du
+            PC pour scanner
+            automatiquement le
+            QR code du donneur.
+          </p>
+
+          {/* BUTTONS */}
+          {!cameraOpen ? (
+            <button
+              onClick={
+                startScanner
+              }
+              className="mt-6 inline-flex items-center gap-3 rounded-2xl bg-red-600 px-8 py-4 text-lg font-bold text-white shadow-lg transition hover:bg-red-700"
+            >
+              <Camera size={22} />
+
+              Scanner QR
+            </button>
+          ) : (
+            <button
+              onClick={
+                stopScanner
+              }
+              className="mt-6 inline-flex items-center gap-3 rounded-2xl border border-red-300 bg-white px-8 py-4 text-lg font-bold text-red-700 transition hover:bg-red-100 dark:bg-slate-900"
+            >
+              <X size={22} />
+
+              Fermer caméra
+            </button>
+          )}
+
+        </div>
+
+        {/* CAMERA */}
+        {cameraOpen && (
+          <div className="mt-6 overflow-hidden rounded-[24px] border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-900">
+
+            <div className="mb-4 text-center">
+
+              <p className="text-sm font-semibold text-green-600">
+                📷 Caméra active...
+              </p>
+
+            </div>
+
+            <div
+              id="qr-reader"
+              className="min-h-[320px] overflow-hidden rounded-2xl"
+            />
+
+          </div>
+        )}
+      </div>
+
+      {/* MANUAL INPUT */}
+      <div className="mt-8">
+
+        <div className="mb-4">
+          <h3 className="text-lg font-bold text-slate-900 dark:text-white">
+            Saisie manuelle
+          </h3>
+
+          <p className="text-sm text-slate-500 dark:text-slate-400">
+            Utiliser l’ID du
+            QR code si la caméra
+            n’est pas disponible.
+          </p>
+        </div>
+
+        <form
+          onSubmit={
+            handleSubmit
+          }
+          className="grid gap-4 md:grid-cols-2"
         >
-          {loading ? "Scan en cours..." : "Scanner le QR"}
-        </button>
-      </form>
+
+          {/* QR INPUT */}
+          <input
+            type="text"
+            placeholder="QR data / ID utilisateur"
+            value={qrData}
+            onChange={(e) =>
+              setQrData(
+                e.target.value
+              )
+            }
+            className="rounded-2xl border border-slate-300 px-4 py-3 outline-none transition focus:border-red-500 md:col-span-2 dark:border-slate-700 dark:bg-slate-800 dark:text-white"
+            required
+          />
+
+          {/* CENTRE */}
+          <input
+            type="number"
+            placeholder="Centre ID"
+            value={centreId}
+            onChange={(e) =>
+              setCentreId(
+                e.target.value
+              )
+            }
+            disabled={
+              isStaffOrDirector
+            }
+            className={`
+              rounded-2xl border px-4 py-3 outline-none transition focus:border-red-500
+
+              ${
+                isStaffOrDirector
+                  ? "cursor-not-allowed bg-slate-100 text-slate-400 dark:bg-slate-800 dark:text-slate-500"
+                  : "border-slate-300 dark:border-slate-700 dark:bg-slate-800 dark:text-white"
+              }
+            `}
+            required
+          />
+
+          {/* SUBMIT */}
+          <button
+            type="submit"
+            disabled={loading}
+            className="rounded-2xl bg-slate-900 px-4 py-3 font-bold text-white transition hover:bg-slate-800 disabled:opacity-60 dark:bg-white dark:text-slate-900"
+          >
+            {loading
+              ? "Validation..."
+              : "Valider"}
+          </button>
+
+        </form>
+      </div>
 
       {/* ERROR */}
       {error && (
-        <div className="mt-4 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700">
+        <div className="mt-6 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700 dark:border-red-900/40 dark:bg-red-950/20 dark:text-red-300">
           {error}
         </div>
       )}
 
       {/* RESULT */}
       {result && (
-        <div className="mt-6 rounded-[24px] border border-slate-200 bg-slate-50 dark:bg-slate-800 p-5">
-          <h3 className="text-lg font-extrabold text-slate-900 dark:text-white">
-            Résultat
+        <div className="mt-6 rounded-[24px] border border-green-200 bg-green-50 p-5 dark:border-green-900/40 dark:bg-green-950/20">
+
+          <h3 className="text-lg font-extrabold text-green-700 dark:text-green-300">
+            Scan réussi
           </h3>
 
-          <div className="mt-4 grid gap-4 md:grid-cols-2">
-            <div className="rounded-2xl border border-slate-200 bg-white dark:bg-slate-900 p-4">
-              <p className="text-sm text-slate-500">Message</p>
+          <div className="mt-4 grid gap-4 sm:grid-cols-2">
+
+            <div className="rounded-2xl border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-900">
+              <p className="text-sm text-slate-500">
+                Message
+              </p>
+
               <p className="mt-2 font-bold text-slate-900 dark:text-white">
-                {result?.message || "—"}
+                {result?.message ||
+                  "—"}
               </p>
             </div>
 
-            <div className="rounded-2xl border border-slate-200 bg-white dark:bg-slate-900 p-4">
-              <p className="text-sm text-slate-500">Succès</p>
+            <div className="rounded-2xl border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-900">
+              <p className="text-sm text-slate-500">
+                Succès
+              </p>
+
               <p className="mt-2 font-bold text-slate-900 dark:text-white">
-                {result?.success ? "Oui" : "Non"}
+                {result?.success
+                  ? "Oui"
+                  : "Non"}
               </p>
             </div>
+
           </div>
-
-          {result?.don && (
-            <div className="mt-4 rounded-2xl border border-slate-200 bg-white dark:bg-slate-900 p-4">
-              <p className="text-sm text-slate-500">Don créé</p>
-              <pre className="mt-2 overflow-x-auto text-xs text-slate-700 dark:text-slate-300">
-                {JSON.stringify(result.don, null, 2)}
-              </pre>
-            </div>
-          )}
-
-          {result?.certificat && (
-            <div className="mt-4 rounded-2xl border border-slate-200 bg-white dark:bg-slate-900 p-4">
-              <p className="text-sm text-slate-500">Certificat</p>
-              <pre className="mt-2 overflow-x-auto text-xs text-slate-700 dark:text-slate-300">
-                {JSON.stringify(result.certificat, null, 2)}
-              </pre>
-            </div>
-          )}
         </div>
       )}
     </div>
