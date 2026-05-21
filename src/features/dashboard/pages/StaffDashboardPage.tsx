@@ -30,7 +30,7 @@ export default function StaffDashboardPage() {
       setRequests(demandes);
 
       const demandesUrgentes = demandes.filter(
-        (d) => d.statut === "en attente"
+        (d) => d.statut === "EN_ATTENTE"
       ).length;
 
       let donneursData: Donor[] = [];
@@ -167,7 +167,7 @@ export default function StaffDashboardPage() {
 
                 <span
                   className={`rounded-xl px-3 py-1 text-sm font-semibold ${
-                    req.statut === "satisfaite"
+                    req.statut === "VALIDE"
                       ? "bg-green-100 text-green-700"
                       : "bg-yellow-100 text-yellow-700"
                   }`}
