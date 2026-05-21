@@ -67,6 +67,10 @@ export const centresService = {
   },
 
   async createCentre(payload: CreateCentrePayload): Promise<void> {
+    console.log(
+      "🔥 PAYLOAD CREATE CENTRE:",
+      payload
+    );
     try {
       const response = await api.post("/centres", payload);
 

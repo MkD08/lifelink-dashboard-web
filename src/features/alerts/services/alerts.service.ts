@@ -1,99 +1,207 @@
 import { api } from "../../../lib/axios";
 
-export type AlertType = "urgent" | "warning" | "info";
-
-export interface Centre {
-  id_centre: number;
-  nom: string;
-  ville: string;
-}
-
-/**
- * CREATE ALERT PAYLOAD
- */
-export interface CreateAlertPayload {
-  titre: string;
-  message: string;
-  type: AlertType;
-  groupe_sanguin: string;
-  ville: string;
-  centre_id?: number;
-}
-
-/**
- * ALERT MODEL (GET BACKEND)
- */
-export interface Alert {
-  id_alerte: number;
-  titre: string;
-  message: string;
-  type: AlertType;
-  groupe_sanguin: string;
-  ville: string;
-  date_creation: string;
-  centre?: Centre;
-}
-
-export interface AlertsResponse {
-  success: boolean;
-  data: Alert[];
-}
+import type {
+  Alert,
+  CreateAlertPayload,
+  UpdateAlertPayload,
+} from "../types/alert.types";
 
 export const alertsService = {
 
-  // =========================
-  // GET ALL ALERTS
-  // =========================
-  async getAllAlerts(): Promise<Alert[]> {
+  /**
+   * =========================
+   * CREATE ALERT
+   * =========================
+   */
+  async createAlert(
+    data: CreateAlertPayload
+  ): Promise<Alert> {
+
     try {
-      console.log("🚀 GET ALERTS START");
 
-      const res = await api.get<AlertsResponse>("/alertes");
+      const response =
+        await api.post(
+          "/alertes",
+          data
+        );
 
-      console.log("📦 RESPONSE:", res.data);
+      return response.data?.data;
 
-      if (!res.data?.success && res.data?.success !== undefined) {
-        throw new Error("Backend error");
-      }
+    } catch (err: any) {
 
-      return res.data.data ?? [];
-    } catch (error: any) {
-      console.error("🔥 GET ALERTS ERROR:", error);
+      console.error(
+        "❌ CREATE ALERT ERROR:",
+        err
+      );
 
-      if (error?.response) {
-        console.error("📛 STATUS:", error.response.status);
-        console.error("📛 DATA:", error.response.data);
-      }
-
-      throw new Error("Impossible de charger les alertes");
+      throw new Error(
+        err?.response?.data
+          ?.message ||
+          "Impossible de créer l'alerte"
+      );
     }
   },
 
-  // =========================
-  // CREATE ALERT
-  // =========================
-  async createAlert(data: CreateAlertPayload) {
+  /**
+   * =========================
+   * GET ALL ALERTS
+   * =========================
+   */
+  async getAlerts(): Promise<
+    Alert[]
+  > {
+
     try {
-      console.log("🚀 CREATE ALERT PAYLOAD:", data);
 
-      const res = await api.post("/alertes", data);
+      const response =
+        await api.get(
+          "/alertes"
+        );
 
-      console.log("📦 CREATE RESPONSE:", res.data);
+      return (
+        response.data?.data || []
+      );
 
-      if (!res.data?.success) {
-        throw new Error(res.data?.message || "Erreur création alerte");
-      }
+    } catch (err: any) {
 
-      return res.data.data;
-    } catch (error: any) {
-      console.error("🔥 CREATE ALERT ERROR:", error);
+      console.error(
+        "❌ GET ALERTS ERROR:",
+        err
+      );
 
-      if (error?.response) {
-        // console.error("📛 STATUS:", error.response.status);
-        // console.error("📛 DATA:", error.response.data);
-      }
+      throw new Error(
+        err?.response?.data
+          ?.message ||
+          "Impossible de charger les alertes"
+      );
+    }
+  },
 
-      throw new Error("Erreur création alerte");
+  /**
+   * =========================
+   * GET ONE ALERT
+   * =========================
+   */
+  async getAlert(
+    id: number
+  ): Promise<Alert> {
+
+    try {
+
+      const response =
+        await api.get(
+          `/alertes/${id}`
+        );
+
+      return response.data?.data;
+
+    } catch (err: any) {
+
+      console.error(
+        "❌ GET ALERT ERROR:",
+        err
+      );
+
+      throw new Error(
+        err?.response?.data
+          ?.message ||
+          "Impossible de récupérer l'alerte"
+      );
+    }
+  },
+
+  /**
+   * =========================
+   * UPDATE ALERT
+   * =========================
+   */
+  async updateAlert(
+    id: number,
+    data: UpdateAlertPayload
+  ): Promise<Alert> {
+
+    try {
+
+      const response =
+        await api.put(
+          `/alertes/${id}`,
+          data
+        );
+
+      return response.data?.data;
+
+    } catch (err: any) {
+
+      console.error(
+        "❌ UPDATE ALERT ERROR:",
+        err
+      );
+
+      throw new Error(
+        err?.response?.data
+          ?.message ||
+          "Impossible de modifier l'alerte"
+      );
+    }
+  },
+
+  /**
+   * =========================
+   * DELETE ALERT
+   * =========================
+   */
+  async deleteAlert(
+    id: number
+  ): Promise<void> {
+
+    try {
+
+      await api.delete(
+        `/alertes/${id}`
+      );
+
+    } catch (err: any) {
+
+      console.error(
+        "❌ DELETE ALERT ERROR:",
+        err
+      );
+
+      throw new Error(
+        err?.response?.data
+          ?.message ||
+          "Impossible de supprimer l'alerte"
+      );
+    }
+  },
+
+  /**
+   * =========================
+   * MARK ALERT AS READ
+   * =========================
+   */
+  async markAsRead(
+    id: number
+  ): Promise<void> {
+
+    try {
+
+      await api.put(
+        `/alertes/${id}/read`
+      );
+
+    } catch (err: any) {
+
+      console.error(
+        "❌ MARK READ ERROR:",
+        err
+      );
+
+      throw new Error(
+        err?.response?.data
+          ?.message ||
+          "Impossible de lire l'alerte"
+      );
     }
   },
 };

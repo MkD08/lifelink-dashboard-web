@@ -154,7 +154,7 @@ export default function DonorsPage() {
             </p>
           </div>
 
-          <div className="flex w-full max-w-4xl gap-3">
+          <div className="flex w-full flex-col gap-3 lg:max-w-4xl lg:flex-row">
             <input
               type="text"
               placeholder="Rechercher par nom, téléphone, ville, quartier, groupe..."

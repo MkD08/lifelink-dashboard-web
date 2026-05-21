@@ -1,7 +1,16 @@
 import { useEffect, useState } from "react";
+
 import { alertsService } from "../services/alerts.service";
+
 import { api } from "../../../lib/axios";
+
 import { useToast } from "../../auth/store/toast.store";
+
+import LocationSelect from "../../../components/common/LocationSelect";
+
+import { useAuth } from "../../auth/store/auth.store";
+
+import type { AlertType } from "../types/alert.types";
 
 interface Props {
   isOpen: boolean;
@@ -13,6 +22,7 @@ interface Centre {
   id_centre: number;
   nom: string;
   ville: string;
+  quartier?: string;
 }
 
 export default function CreateAlertModal({
@@ -20,156 +30,414 @@ export default function CreateAlertModal({
   onClose,
   onSuccess,
 }: Props) {
-  const { showToast } = useToast();
 
-  const [titre, setTitre] = useState("");
-  const [message, setMessage] = useState("");
-  const [type, setType] = useState("urgent");
-  const [groupe, setGroupe] = useState("");
-  const [ville, setVille] = useState("");
-  const [centreId, setCentreId] = useState<number | null>(null);
+  const { showToast } =
+    useToast();
 
-  const [centres, setCentres] = useState<Centre[]>([]);
-  const [loading, setLoading] = useState(false);
+  const { user } =
+    useAuth();
+
+  const [titre, setTitre] =
+    useState("");
+
+  const [message, setMessage] =
+    useState("");
+
+  const [type, setType] =
+    useState<AlertType>(
+      "urgent"
+    );
+
+  const [groupe, setGroupe] =
+    useState("");
+
+  const [ville, setVille] =
+    useState("");
+
+  const [quartier, setQuartier] =
+    useState("");
+
+  const [centreId, setCentreId] =
+    useState<number | null>(
+      null
+    );
+
+  const [isGlobal, setIsGlobal] =
+    useState(false);
+
+  const [centres, setCentres] =
+    useState<Centre[]>([]);
+
+  const [loading, setLoading] =
+    useState(false);
 
   // =========================
-  // LOAD CENTRES (SAFE)
+  // ROLES
   // =========================
-  const loadCentres = async () => {
-    try {
-      console.log("🚀 LOAD CENTRES");
+  const isAdmin =
+    user?.role_id === 1;
 
-      const res = await api.get("/centres");
+  const isDirector =
+    user?.role_id === 3;
 
-      console.log("📦 CENTRES RAW:", res.data);
+  const isStaff =
+    user?.role_id === 4;
 
-      // 🔥 SAFE EXTRACTION
-      const data = res.data?.data ?? res.data ?? [];
+  const isCentreUser =
+    isDirector || isStaff;
 
-      if (Array.isArray(data)) {
-        setCentres(data);
-      } else {
-        console.warn("⚠️ centres n'est pas un tableau");
+  // =========================
+  // LOAD CENTRES
+  // =========================
+  const loadCentres =
+    async () => {
+
+      try {
+
+        const res =
+          await api.get(
+            "/centres"
+          );
+
+        const data =
+          res.data?.data ??
+          res.data ??
+          [];
+
+        setCentres(
+          Array.isArray(data)
+            ? data
+            : []
+        );
+
+      } catch (err) {
+
+        console.error(
+          err
+        );
+
         setCentres([]);
       }
-    } catch (err) {
-      console.error("❌ CENTRES LOAD ERROR:", err);
-      setCentres([]);
-    }
-  };
+    };
 
   useEffect(() => {
+
     if (isOpen) {
       loadCentres();
     }
+
   }, [isOpen]);
 
   // =========================
-  // SUBMIT ALERT
+  // AUTO FILL STAFF/DIRECTOR
   // =========================
-  const handleSubmit = async () => {
-    try {
-      setLoading(true);
+  useEffect(() => {
 
-      console.log("🚀 CREATE ALERT:", {
-        titre,
-        message,
-        type,
-        groupe_sanguin: groupe,
-        ville,
-        centre_id: centreId,
-      });
+    if (
+      isCentreUser &&
+      user?.centre_sante
+    ) {
 
-      await alertsService.createAlert({
-        titre,
-        message,
-        type: type as any,
-        groupe_sanguin: groupe,
-        ville,
-        centre_id: centreId ?? undefined,
-      });
+      setCentreId(
+        user.centre_sante.id_centre
+      );
 
-      showToast("Alerte créée avec succès", "success");
+      setVille(
+        user.centre_sante.ville || ""
+      );
 
-      // RESET
-      setTitre("");
-      setMessage("");
-      setGroupe("");
-      setVille("");
-      setCentreId(null);
-
-      onSuccess();
-      onClose();
-    } catch (err) {
-      console.error("❌ CREATE ALERT ERROR:", err);
-      showToast("Erreur création alerte", "error");
-    } finally {
-      setLoading(false);
+      setQuartier(
+        user.centre_sante.adresse ||
+          ""
+      );
     }
-  };
 
-  if (!isOpen) return null;
+  }, [user]);
+
+  // =========================
+  // SELECT CENTRE ADMIN
+  // =========================
+  useEffect(() => {
+
+    if (
+      isAdmin &&
+      centreId &&
+      !isGlobal
+    ) {
+
+      const centre =
+        centres.find(
+          (c) =>
+            c.id_centre ===
+            centreId
+        );
+
+      if (centre) {
+
+        setVille(
+          centre.ville || ""
+        );
+
+        setQuartier(
+          centre.quartier ||
+            ""
+        );
+      }
+    }
+
+  }, [
+    centreId,
+    centres,
+    isAdmin,
+    isGlobal,
+  ]);
+
+  // =========================
+  // RESET GLOBAL
+  // =========================
+  useEffect(() => {
+
+    if (isGlobal) {
+
+      setCentreId(
+        null
+      );
+
+      setVille("");
+
+      setQuartier("");
+    }
+
+  }, [isGlobal]);
+
+  // =========================
+  // SUBMIT
+  // =========================
+  const handleSubmit =
+    async () => {
+
+      try {
+
+        // VALIDATION
+        if (!titre) {
+
+          showToast(
+            "Le titre est obligatoire",
+            "error"
+          );
+
+          return;
+        }
+
+        if (!message) {
+
+          showToast(
+            "Le message est obligatoire",
+            "error"
+          );
+
+          return;
+        }
+
+        if (
+          type ===
+            "urgent" &&
+          !groupe
+        ) {
+
+          showToast(
+            "Le groupe sanguin est obligatoire",
+            "error"
+          );
+
+          return;
+        }
+
+        setLoading(
+          true
+        );
+
+        await alertsService.createAlert(
+          {
+
+            titre,
+
+            message,
+
+            type,
+
+            groupe_sanguin:
+              type ===
+              "urgent"
+                ? groupe
+                : undefined,
+
+            ville,
+
+            quartier,
+
+            centre_id:
+              isGlobal
+                ? undefined
+                : centreId ??
+                  undefined,
+
+            is_global:
+              isGlobal,
+          }
+        );
+
+        showToast(
+          "Alerte créée avec succès",
+          "success"
+        );
+
+        // RESET
+        setTitre("");
+
+        setMessage("");
+
+        setType(
+          "urgent"
+        );
+
+        setGroupe("");
+
+        setVille("");
+
+        setQuartier("");
+
+        setCentreId(
+          null
+        );
+
+        setIsGlobal(
+          false
+        );
+
+        onSuccess();
+
+        onClose();
+
+      } catch (err) {
+
+        console.error(
+          err
+        );
+
+        showToast(
+          "Erreur création alerte",
+          "error"
+        );
+
+      } finally {
+
+        setLoading(
+          false
+        );
+      }
+    };
+
+  if (!isOpen)
+    return null;
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black/40 px-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
+
       <div className="w-full max-w-[520px] space-y-4 rounded-2xl bg-white p-6 shadow-xl dark:bg-slate-900">
-        <h2 className="text-xl font-bold text-slate-900 dark:text-white">
-          Créer une alerte
-        </h2>
+
+        {/* HEADER */}
+        <div>
+
+          <h2 className="text-xl font-bold text-slate-900 dark:text-white">
+            Créer une alerte
+          </h2>
+
+          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+            Création d’une alerte médicale.
+          </p>
+
+        </div>
 
         {/* TITRE */}
         <input
+          placeholder="Titre"
+          value={titre}
+          onChange={(e) =>
+            setTitre(
+              e.target.value
+            )
+          }
           className="
             w-full
             rounded-2xl
             border border-slate-300
             bg-white
             px-4 py-3
-            text-slate-900
             outline-none
             focus:border-red-500
 
             dark:border-slate-700
             dark:bg-slate-800
             dark:text-white
-            dark:placeholder:text-slate-400
           "
-          placeholder="Titre"
-          value={titre}
-          onChange={(e) => setTitre(e.target.value)}
         />
 
         {/* MESSAGE */}
         <textarea
+          rows={4}
+          placeholder="Message"
+          value={message}
+          onChange={(e) =>
+            setMessage(
+              e.target.value
+            )
+          }
           className="
             w-full
             rounded-2xl
             border border-slate-300
             bg-white
             px-4 py-3
-            text-slate-900
             outline-none
             focus:border-red-500
 
             dark:border-slate-700
             dark:bg-slate-800
             dark:text-white
-            dark:placeholder:text-slate-400
           "
-          placeholder="Message"
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
         />
 
         {/* TYPE */}
         <select
+          value={type}
+          onChange={(e) => {
+
+            const value =
+              e.target
+                .value as AlertType;
+
+            setType(
+              value
+            );
+
+            // RESET GROUP
+            if (
+              value !==
+              "urgent"
+            ) {
+
+              setGroupe(
+                ""
+              );
+            }
+          }}
           className="
             w-full
             rounded-2xl
             border border-slate-300
             bg-white
             px-4 py-3
-            text-slate-900
             outline-none
             focus:border-red-500
 
@@ -177,143 +445,271 @@ export default function CreateAlertModal({
             dark:bg-slate-800
             dark:text-white
           "
-          value={type}
-          onChange={(e) => setType(e.target.value)}
         >
-          <option
-            value="urgent"
-            className="dark:bg-slate-800 dark:text-white"
-          >
+
+          <option value="urgent">
             Urgent
           </option>
 
-          <option
-            value="warning"
-            className="dark:bg-slate-800 dark:text-white"
-          >
+          <option value="warning">
             Warning
           </option>
 
-          <option
-            value="info"
-            className="dark:bg-slate-800 dark:text-white"
-          >
+          <option value="info">
             Info
           </option>
+
         </select>
 
         {/* GROUPE */}
-        <input
-          className="
-            w-full
-            rounded-2xl
-            border border-slate-300
-            bg-white
-            px-4 py-3
-            text-slate-900
-            outline-none
-            focus:border-red-500
-
-            dark:border-slate-700
-            dark:bg-slate-800
-            dark:text-white
-            dark:placeholder:text-slate-400
-          "
-          placeholder="Groupe sanguin (ex: O+)"
-          value={groupe}
-          onChange={(e) => setGroupe(e.target.value)}
-        />
-
-        {/* VILLE */}
-        <input
-          className="
-            w-full
-            rounded-2xl
-            border border-slate-300
-            bg-white
-            px-4 py-3
-            text-slate-900
-            outline-none
-            focus:border-red-500
-
-            dark:border-slate-700
-            dark:bg-slate-800
-            dark:text-white
-            dark:placeholder:text-slate-400
-          "
-          placeholder="Ville"
-          value={ville}
-          onChange={(e) => setVille(e.target.value)}
-        />
-
-        {/* CENTRE SELECT (SAFE) */}
         <select
-          className="
-            w-full
-            rounded-2xl
-            border border-slate-300
-            bg-white
-            px-4 py-3
-            text-slate-900
-            outline-none
-            focus:border-red-500
-
-            dark:border-slate-700
-            dark:bg-slate-800
-            dark:text-white
-          "
-          value={centreId ?? ""}
+          disabled={
+            type !==
+            "urgent"
+          }
+          value={groupe}
           onChange={(e) =>
-            setCentreId(
-              e.target.value ? Number(e.target.value) : null
+            setGroupe(
+              e.target.value
             )
           }
+          className={`
+            w-full
+            rounded-2xl
+            border
+            px-4 py-3
+            outline-none
+
+            ${
+              type ===
+              "urgent"
+
+                ? `
+                  border-slate-300
+                  bg-white
+                  focus:border-red-500
+
+                  dark:border-slate-700
+                  dark:bg-slate-800
+                  dark:text-white
+                `
+
+                : `
+                  cursor-not-allowed
+                  border-slate-200
+                  bg-slate-100
+                  text-slate-400
+
+                  dark:border-slate-800
+                  dark:bg-slate-900
+                `
+            }
+          `}
         >
-          <option
-            value=""
-            className="dark:bg-slate-800 dark:text-white"
-          >
-            Sélectionner un centre
+
+          <option value="">
+            {type ===
+            "urgent"
+              ? "Sélectionner groupe sanguin"
+              : "Non nécessaire"}
           </option>
 
-          {centres.length > 0 ? (
-            centres.map((c) => (
-              <option
-                key={c.id_centre}
-                value={c.id_centre}
-                className="dark:bg-slate-800 dark:text-white"
-              >
-                {c.nom} ({c.ville})
-              </option>
-            ))
-          ) : (
-            <option
-              disabled
-              className="dark:bg-slate-800 dark:text-white"
-            >
-              Aucun centre disponible
-            </option>
-          )}
+          <option value="A+">
+            A+
+          </option>
+
+          <option value="A-">
+            A-
+          </option>
+
+          <option value="B+">
+            B+
+          </option>
+
+          <option value="B-">
+            B-
+          </option>
+
+          <option value="AB+">
+            AB+
+          </option>
+
+          <option value="AB-">
+            AB-
+          </option>
+
+          <option value="O+">
+            O+
+          </option>
+
+          <option value="O-">
+            O-
+          </option>
+
         </select>
 
+        {/* LOCATION */}
+        <LocationSelect
+          ville={ville}
+          quartier={quartier}
+          disabled={
+            isCentreUser ||
+            isGlobal
+          }
+          onVilleChange={(
+            value
+          ) =>
+            setVille(
+              value
+            )
+          }
+          onQuartierChange={(
+            value
+          ) =>
+            setQuartier(
+              value
+            )
+          }
+        />
+
+        {/* GLOBAL */}
+        {isAdmin && (
+
+          <div className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 dark:border-slate-700 dark:bg-slate-800">
+
+            <input
+              type="checkbox"
+              checked={
+                isGlobal
+              }
+              onChange={(e) =>
+                setIsGlobal(
+                  e.target
+                    .checked
+                )
+              }
+            />
+
+            <p className="text-sm font-semibold text-slate-700 dark:text-slate-300">
+              Alerte globale
+            </p>
+
+          </div>
+        )}
+
+        {/* CENTRE */}
+        <select
+          disabled={
+            isCentreUser ||
+            isGlobal
+          }
+          value={
+            centreId ?? ""
+          }
+          onChange={(e) =>
+            setCentreId(
+              e.target.value
+                ? Number(
+                    e.target
+                      .value
+                  )
+                : null
+            )
+          }
+          className="
+            w-full
+            rounded-2xl
+            border border-slate-300
+            bg-white
+            px-4 py-3
+            outline-none
+            focus:border-red-500
+
+            disabled:cursor-not-allowed
+            disabled:bg-slate-100
+
+            dark:border-slate-700
+            dark:bg-slate-800
+            dark:text-white
+          "
+        >
+
+          <option value="">
+            {isGlobal
+              ? "Alerte globale"
+              : "Sélectionner centre"}
+          </option>
+
+          {centres.map(
+            (c) => (
+              <option
+                key={
+                  c.id_centre
+                }
+                value={
+                  c.id_centre
+                }
+              >
+                {c.nom} (
+                {c.ville})
+              </option>
+            )
+          )}
+
+        </select>
+
+        {/* INFO */}
+        {isCentreUser && (
+          <div className="rounded-2xl border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-blue-700 dark:border-blue-900 dark:bg-blue-950/20 dark:text-blue-300">
+            Cette alerte sera automatiquement liée à votre centre de santé.
+          </div>
+        )}
+
         {/* ACTIONS */}
-        <div className="flex justify-end gap-2">
+        <div className="flex justify-end gap-3">
+
           <button
-            onClick={onClose}
-            className="rounded-xl border border-slate-300 px-4 py-2 text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-white"
+            onClick={
+              onClose
+            }
+            className="
+              rounded-xl
+              border border-slate-300
+              px-4 py-2
+
+              dark:border-slate-700
+              dark:text-white
+            "
           >
             Annuler
           </button>
 
           <button
-            onClick={handleSubmit}
-            disabled={loading}
-            className="rounded-xl bg-red-600 px-4 py-2 text-white"
+            disabled={
+              loading
+            }
+            onClick={
+              handleSubmit
+            }
+            className="
+              rounded-xl
+              bg-red-600
+              px-4 py-2
+              text-white
+              transition
+              hover:bg-red-700
+              disabled:opacity-60
+            "
           >
-            {loading ? "Création..." : "Créer"}
+            {loading
+              ? "Création..."
+              : "Créer"}
           </button>
+
         </div>
+
       </div>
+
     </div>
   );
 }

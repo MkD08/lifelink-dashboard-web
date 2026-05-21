@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { centresService } from "../services/centres.service";
 import { useToast } from "../../auth/store/toast.store";
+import LocationSelect from "../../../components/common/LocationSelect";
 
 type Props = {
   isOpen: boolean;
@@ -17,6 +18,7 @@ export default function CreateCentreModal({
     nom: "",
     ville: "",
     adresse: "",
+    quartier: "",
     latitude: "",
     longitude: "",
     telephone: "",
@@ -41,6 +43,7 @@ export default function CreateCentreModal({
       nom: "",
       ville: "",
       adresse: "",
+      quartier: "",
       latitude: "",
       longitude: "",
       telephone: "",
@@ -57,7 +60,11 @@ export default function CreateCentreModal({
       await centresService.createCentre({
         nom: form.nom.trim(),
         ville: form.ville.trim(),
-        adresse: form.adresse.trim(),
+        adresse:
+  (
+    form.adresse ||
+    `${form.quartier}${form.quartier ? ", " : ""}${form.ville}`
+  ).trim(),
         latitude: Number(form.latitude),
         longitude: Number(form.longitude),
         telephone: form.telephone.trim() || null,
@@ -116,33 +123,29 @@ export default function CreateCentreModal({
             required
           />
 
-          <input
-            type="text"
-            placeholder="Ville"
-            value={form.ville}
-            onChange={(e) => updateField("ville", e.target.value)}
-            className="
-              rounded-2xl
-              border border-slate-300
-              bg-white
-              px-4 py-3
-              text-slate-900
-              outline-none
-              focus:border-red-500
+          <div className="md:col-span-2">
+            <LocationSelect
+              ville={form.ville}
+              quartier={form.quartier}
+              onVilleChange={(value) =>
+                updateField("ville", value)
+              }
+              onQuartierChange={(value) =>
+                updateField("quartier", value)
+              }
+            />
+          </div>
 
-              dark:border-slate-700
-              dark:bg-slate-800
-              dark:text-white
-              dark:placeholder:text-slate-400
-            "
-            required
-          />
-
-          <input
-            type="text"
-            placeholder="Adresse"
-            value={form.adresse}
-            onChange={(e) => updateField("adresse", e.target.value)}
+            <input
+              type="text"
+              placeholder="Adresse complète"
+              value={
+                form.adresse ||
+                `${form.quartier}${form.quartier ? ", " : ""}${form.ville}`
+              }
+              onChange={(e) =>
+                updateField("adresse", e.target.value)
+              }
             className="
               rounded-2xl
               border border-slate-300

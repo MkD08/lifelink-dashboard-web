@@ -6,6 +6,8 @@ import { useToast } from "../../auth/store/toast.store";
 
 import { directorsService } from "../services/directors.service";
 
+import LocationSelect from "../../../components/common/LocationSelect";
+
 import type { Director } from "../types/director.types";
 
 type Props = {
@@ -214,31 +216,23 @@ export default function EditDirectorModal({
             className={inputStyle}
           />
 
-          <input
-            type="text"
-            placeholder="Ville"
-            value={form.ville}
-            onChange={(e) =>
-              updateField(
-                "ville",
-                e.target.value
-              )
-            }
-            className={inputStyle}
-          />
+          {/* LOCALISATION */}
+<div className="md:col-span-2">
 
-          <input
-            type="text"
-            placeholder="Quartier"
-            value={form.quartier}
-            onChange={(e) =>
-              updateField(
-                "quartier",
-                e.target.value
-              )
-            }
-            className={inputStyle}
-          />
+<LocationSelect
+  ville={form.ville}
+  quartier={form.quartier}
+
+  onVilleChange={(value) =>
+    updateField("ville", value)
+  }
+
+  onQuartierChange={(value) =>
+    updateField("quartier", value)
+  }
+/>
+
+</div>
 
           {/* CENTRE */}
           <select

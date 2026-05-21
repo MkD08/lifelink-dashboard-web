@@ -41,36 +41,62 @@ export const stocksService = {
   },
 
   async updateStock(
-    centreId: number,
     groupeSanguin: string,
     quantite: number
   ): Promise<void> {
+  
     try {
-      const response = await api.post("/banque", {
-        centre_id: centreId,
-        groupe_sanguin: groupeSanguin,
-        quantite,
-      });
-
-      if (response.data?.success === false) {
+  
+      const response =
+        await api.post(
+          "/banque",
+          {
+            groupe_sanguin:
+              groupeSanguin,
+  
+            quantite,
+          }
+        );
+  
+      if (
+        response.data?.success === false
+      ) {
+  
         throw new Error(
-          response.data?.message || "Impossible de mettre à jour le stock"
+  
+          response.data?.message ||
+  
+          "Impossible de mettre à jour le stock"
         );
       }
+  
     } catch (error) {
-      if (error instanceof AxiosError) {
+  
+      if (
+        error instanceof AxiosError
+      ) {
+  
         throw new Error(
-          error.response?.data?.message ||
-            error.message ||
-            "Impossible de mettre à jour le stock"
+  
+          error.response?.data
+            ?.message ||
+  
+          error.message ||
+  
+          "Impossible de mettre à jour le stock"
         );
       }
-
-      if (error instanceof Error) {
+  
+      if (
+        error instanceof Error
+      ) {
+  
         throw error;
       }
-
-      throw new Error("Impossible de mettre à jour le stock");
+  
+      throw new Error(
+        "Impossible de mettre à jour le stock"
+      );
     }
-  },
-};
+  }
+}

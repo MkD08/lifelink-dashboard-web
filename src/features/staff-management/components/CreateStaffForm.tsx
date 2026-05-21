@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { staffManagementService } from "../services/staff-management.service";
 import { useToast } from "../../auth/store/toast.store";
+import LocationSelect from "../../../components/common/LocationSelect";
 
 const genders = [
   { label: "Masculin", value: "M" },
@@ -151,23 +152,23 @@ export default function CreateStaffForm() {
           required
         />
 
-        <input
-          type="text"
-          placeholder="Ville"
-          value={form.ville}
-          onChange={(e) => updateField("ville", e.target.value)}
-          className={inputStyle}
-          required
-        />
+       {/* LOCALISATION */}
+<div className="md:col-span-2">
 
-        <input
-          type="text"
-          placeholder="Quartier"
-          value={form.quartier}
-          onChange={(e) => updateField("quartier", e.target.value)}
-          className={`${inputStyle} md:col-span-2`}
-          required
-        />
+<LocationSelect
+  ville={form.ville}
+  quartier={form.quartier}
+
+  onVilleChange={(value) =>
+    updateField("ville", value)
+  }
+
+  onQuartierChange={(value) =>
+    updateField("quartier", value)
+  }
+/>
+
+</div>
 
         {error && (
           <div className="md:col-span-2 rounded-2xl border border-red-200 bg-red-50 dark:bg-red-900/20 px-4 py-3 text-sm font-medium text-red-700 dark:text-red-400">

@@ -12,6 +12,7 @@ import StocksPage from "../features/stocks/pages/StocksPage";
 import StatisticsPage from "../features/statistics/pages/StatisticsPage";
 import CreateStaffPage from "../features/staff-management/pages/CreateStaffPage";
 import DonorDetailsPage from "../features/donors/pages/DonorDetailsPage";
+import NotificationsPage from "../features/notifications/pages/NotificationsPage";
 import ScanQrPage from "../features/donors/pages/ScanQrPage";
 import AdminUsersPage from "../features/admin-users/pages/AdminUsersPage";
 import DirectorsPage from "../features/directors/pages/DirectorsPage";
@@ -126,6 +127,15 @@ export default function AppRouter() {
           }
         />
 
+<Route
+  path="/notifications"
+  element={
+    <RoleGuard allowedRoles={[1, 3, 4]}>
+      <NotificationsPage />
+    </RoleGuard>
+  }
+/>
+
         <Route
           path="/stocks"
           element={
@@ -170,5 +180,6 @@ export default function AppRouter() {
   }
 />
     </Routes>
+    
   );
 }

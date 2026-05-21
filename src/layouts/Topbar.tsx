@@ -1,6 +1,13 @@
-import { useEffect, useState } from "react";
+import {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 
-import { useNavigate } from "react-router-dom";
+import {
+  useNavigate,
+} from "react-router-dom";
 
 import {
   Bell,
@@ -11,18 +18,67 @@ import {
   Info,
 } from "lucide-react";
 
-import { useAuth } from "../features/auth/store/auth.store";
+import {
+  useAuth,
+} from "../features/auth/store/auth.store";
 
-import { api } from "../lib/axios";
+import type {
+  Notification,
+  NotificationType,
+} from "../features/notifications/types/notification.types";
 
-import type { Alert } from "../features/alerts/services/alerts.service";
+import {
+  notificationsService,
+} from "../features/notifications/services/notifications.service";
+
+import {
+  alertsService,
+} from "../features/alerts/services/alerts.service";
 
 /* =========================
    THEME DROPDOWN
 ========================= */
 function ThemeDropdown() {
+
   const [open, setOpen] =
     useState(false);
+
+  const dropdownRef =
+    useRef<HTMLDivElement>(null);
+
+  // =========================
+  // CLICK OUTSIDE
+  // =========================
+  useEffect(() => {
+
+    const handleClickOutside =
+      (event: MouseEvent) => {
+
+        if (
+          dropdownRef.current &&
+          !dropdownRef.current.contains(
+            event.target as Node
+          )
+        ) {
+
+          setOpen(false);
+        }
+      };
+
+    document.addEventListener(
+      "mousedown",
+      handleClickOutside
+    );
+
+    return () => {
+
+      document.removeEventListener(
+        "mousedown",
+        handleClickOutside
+      );
+    };
+
+  }, []);
 
   const applyTheme = (
     value:
@@ -30,6 +86,7 @@ function ThemeDropdown() {
       | "dark"
       | "auto"
   ) => {
+
     const root =
       document.documentElement;
 
@@ -38,17 +95,20 @@ function ThemeDropdown() {
     );
 
     if (value === "dark") {
+
       root.classList.add(
         "dark"
       );
     }
 
     if (value === "auto") {
+
       if (
         window.matchMedia(
           "(prefers-color-scheme: dark)"
         ).matches
       ) {
+
         root.classList.add(
           "dark"
         );
@@ -62,22 +122,30 @@ function ThemeDropdown() {
   };
 
   useEffect(() => {
+
     const saved =
       (localStorage.getItem(
         "theme"
       ) as any) || "auto";
 
     applyTheme(saved);
+
   }, []);
 
   return (
-    <div className="relative">
+
+    <div
+      ref={dropdownRef}
+      className="relative"
+    >
+
       <button
         onClick={() =>
           setOpen(!open)
         }
         className="rounded-2xl border border-slate-300 p-2 hover:bg-slate-100 dark:border-slate-700 dark:hover:bg-slate-800"
       >
+
         <Moon
           size={18}
           className="text-slate-700 dark:text-white"
@@ -85,16 +153,27 @@ function ThemeDropdown() {
       </button>
 
       {open && (
-        <div className="absolute right-0 z-50 mt-2 w-40 rounded-2xl border border-slate-200 bg-white shadow-lg dark:border-slate-700 dark:bg-slate-900">
+
+        <div className="
+          absolute right-0 z-50 mt-2
+          w-[92vw] max-w-sm
+          rounded-2xl
+          border border-slate-200
+          bg-white shadow-xl
+          dark:border-slate-700
+          dark:bg-slate-900
+        ">
 
           {[
             "light",
             "dark",
             "auto",
           ].map((t) => (
+
             <button
               key={t}
               onClick={() => {
+
                 applyTheme(
                   t as any
                 );
@@ -113,18 +192,20 @@ function ThemeDropdown() {
 }
 
 /* =========================
-   ALERT STYLE
+   NOTIFICATION STYLE
 ========================= */
-function getAlertStyle(
-  type: string
+function getNotificationStyle(
+  type: NotificationType | string
 ) {
+
   switch (type) {
+
     case "urgent":
+
       return {
+
         icon: (
-          <AlertTriangle
-            size={18}
-          />
+          <AlertTriangle size={18} />
         ),
 
         badge:
@@ -132,19 +213,45 @@ function getAlertStyle(
       };
 
     case "warning":
+
       return {
+
         icon: (
-          <AlertTriangle
-            size={18}
-          />
+          <AlertTriangle size={18} />
         ),
 
         badge:
           "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-300",
       };
 
-    default:
+    case "DEMANDE_SANG":
+
       return {
+
+        icon: (
+          <Bell size={18} />
+        ),
+
+        badge:
+          "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300",
+      };
+
+    case "PARTICIPATION_DEMANDE":
+
+      return {
+
+        icon: (
+          <CheckCircle2 size={18} />
+        ),
+
+        badge:
+          "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300",
+      };
+
+    default:
+
+      return {
+
         icon: (
           <Info size={18} />
         ),
@@ -156,27 +263,88 @@ function getAlertStyle(
 }
 
 /* =========================
-   NOTIFICATIONS
+   NOTIFICATIONS DROPDOWN
 ========================= */
 function NotificationsDropdown({
-  alerts,
-  reloadAlerts,
+  notifications,
+  reloadNotifications,
 }: {
-  alerts: Alert[];
+  notifications: any[];
 
-  reloadAlerts: () => Promise<void>;
+  reloadNotifications:
+    () => Promise<void>;
 }) {
+
   const [open, setOpen] =
     useState(false);
 
-  const navigate =
-    useNavigate();
+  const dropdownRef =
+    useRef<HTMLDivElement>(null);
 
-  // 🔥 unread only
-  const unreadAlerts =
-    alerts.filter(
-      (a: any) =>
-        !a.is_read
+  // =========================
+  // CLICK OUTSIDE
+  // =========================
+  useEffect(() => {
+
+    const handleClickOutside =
+      (event: MouseEvent) => {
+
+        if (
+          dropdownRef.current &&
+          !dropdownRef.current.contains(
+            event.target as Node
+          )
+        ) {
+
+          setOpen(false);
+        }
+      };
+
+    document.addEventListener(
+      "mousedown",
+      handleClickOutside
+    );
+
+    return () => {
+
+      document.removeEventListener(
+        "mousedown",
+        handleClickOutside
+      );
+    };
+
+  }, []);
+
+  // =========================
+  // SORT RECENT FIRST
+  // =========================
+  const sortedNotifications =
+    useMemo(() => {
+
+      return [...notifications]
+        .sort(
+
+          (a, b) =>
+
+            new Date(
+              b.date_creation
+            ).getTime()
+
+            -
+
+            new Date(
+              a.date_creation
+            ).getTime()
+        );
+
+    }, [notifications]);
+
+  // =========================
+  // UNREAD
+  // =========================
+  const unreadNotifications =
+    sortedNotifications.filter(
+      (n) => !n.lu
     );
 
   // =========================
@@ -184,19 +352,39 @@ function NotificationsDropdown({
   // =========================
   const markAsRead =
     async (
-      id: number
+      notif: any
     ) => {
+
       try {
-        await api.put(
-          `/alertes/${id}/read`
-        );
 
-        await reloadAlerts();
+        if (
+          notif.source ===
+          "notification"
+        ) {
 
-        navigate("/alerts");
+          await notificationsService
+            .markAsRead(
+              notif.id_notification
+            );
+        }
+
+        if (
+          notif.source ===
+          "alert"
+        ) {
+
+          await alertsService
+            .markAsRead(
+              notif.id_notification
+            );
+        }
+
+        await reloadNotifications();
+
       } catch (
         error
       ) {
+
         console.error(
           "❌ READ ERROR:",
           error
@@ -205,7 +393,12 @@ function NotificationsDropdown({
     };
 
   return (
-    <div className="relative">
+
+    <div
+      ref={dropdownRef}
+      className="relative"
+    >
+
       {/* BUTTON */}
       <button
         onClick={() =>
@@ -213,17 +406,19 @@ function NotificationsDropdown({
         }
         className="relative rounded-2xl border border-slate-300 p-2 hover:bg-slate-100 dark:border-slate-700 dark:hover:bg-slate-800"
       >
+
         <Bell
           size={18}
           className="text-slate-700 dark:text-white"
         />
 
         {/* BADGE */}
-        {unreadAlerts.length >
-          0 && (
+        {unreadNotifications.length > 0 && (
+
           <span className="absolute -right-2 -top-2 flex h-5 min-w-[20px] items-center justify-center rounded-full bg-red-600 px-1 text-xs font-bold text-white">
+
             {
-              unreadAlerts.length
+              unreadNotifications.length
             }
           </span>
         )}
@@ -231,27 +426,31 @@ function NotificationsDropdown({
 
       {/* DROPDOWN */}
       {open && (
+
         <div className="absolute right-0 z-50 mt-2 w-96 overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-2xl dark:border-slate-700 dark:bg-slate-900">
 
           {/* HEADER */}
           <div className="flex items-center justify-between border-b border-slate-200 p-4 dark:border-slate-700">
 
             <div>
+
               <h3 className="font-extrabold text-slate-900 dark:text-white">
                 Notifications
               </h3>
 
               <p className="text-xs text-slate-500">
+
                 {
-                  unreadAlerts.length
+                  unreadNotifications.length
                 }{" "}
                 non lues
               </p>
             </div>
 
             <div className="rounded-full bg-red-100 px-3 py-1 text-xs font-bold text-red-700 dark:bg-red-900/30 dark:text-red-300">
+
               {
-                unreadAlerts.length
+                unreadNotifications.length
               }
             </div>
           </div>
@@ -259,9 +458,10 @@ function NotificationsDropdown({
           {/* LIST */}
           <div className="max-h-[400px] overflow-y-auto">
 
-            {alerts.length ===
-              0 && (
+            {sortedNotifications.length === 0 && (
+
               <div className="p-6 text-center">
+
                 <CheckCircle2
                   size={40}
                   className="mx-auto text-green-500"
@@ -273,26 +473,28 @@ function NotificationsDropdown({
               </div>
             )}
 
-            {alerts
+            {sortedNotifications
               .slice(0, 10)
-              .map((alert: any) => {
+              .map((notif) => {
+
                 const style =
-                  getAlertStyle(
-                    alert.type
+                  getNotificationStyle(
+                    notif.type
                   );
 
                 return (
+
                   <div
                     key={
-                      alert.id_alerte
+                      notif.id_notification
                     }
                     onClick={() =>
                       markAsRead(
-                        alert.id_alerte
+                        notif
                       )
                     }
                     className={`cursor-pointer border-b border-slate-100 p-4 transition hover:bg-slate-50 dark:border-slate-800 dark:hover:bg-slate-800 ${
-                      !alert.is_read
+                      !notif.lu
                         ? "bg-red-50/40 dark:bg-red-950/10"
                         : ""
                     }`}
@@ -315,48 +517,58 @@ function NotificationsDropdown({
                         <div className="flex items-center justify-between gap-3">
 
                           <h4 className="font-bold text-slate-900 dark:text-white">
-                            {
-                              alert.titre
-                            }
+
+                            {notif.titre ||
+                              "Notification"}
                           </h4>
 
-                          {!alert.is_read && (
+                          {!notif.lu && (
+
                             <span className="h-2 w-2 rounded-full bg-red-600" />
                           )}
                         </div>
 
                         <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+
                           {
-                            alert.message
+                            notif.message
                           }
                         </p>
 
-                        <div className="mt-2 flex items-center gap-2">
+                        <div className="mt-2 flex flex-wrap items-center gap-2">
 
                           <span
                             className={`rounded-full px-2 py-1 text-[10px] font-bold uppercase ${style.badge}`}
                           >
                             {
-                              alert.type
+                              notif.type
                             }
                           </span>
 
-                          {alert.groupe_sanguin && (
+                          {notif.ville && (
+
                             <span className="text-xs text-slate-400">
-                              {
-                                alert.groupe_sanguin
-                              }
+
+                              • {notif.ville}
                             </span>
                           )}
 
-                          {alert.ville && (
+                          {notif.quartier && (
+
                             <span className="text-xs text-slate-400">
-                              •{" "}
-                              {
-                                alert.ville
-                              }
+
+                              • {notif.quartier}
                             </span>
                           )}
+
+                          <span className="text-xs text-slate-400">
+
+                            •{" "}
+
+                            {new Date(
+                              notif.date_creation
+                            ).toLocaleString()}
+                          </span>
                         </div>
 
                       </div>
@@ -366,20 +578,6 @@ function NotificationsDropdown({
                   </div>
                 );
               })}
-          </div>
-
-          {/* FOOTER */}
-          <div
-            onClick={() => {
-              setOpen(false);
-
-              navigate(
-                "/alerts"
-              );
-            }}
-            className="cursor-pointer border-t border-slate-200 p-4 text-center text-sm font-bold text-red-600 hover:bg-red-50 dark:border-slate-700 dark:hover:bg-red-950/20"
-          >
-            Voir toutes les notifications
           </div>
         </div>
       )}
@@ -397,14 +595,28 @@ type Props = {
 export default function Topbar({
   onMenuClick,
 }: Props) {
+
   const navigate =
     useNavigate();
 
   const { user, logout } =
     useAuth();
 
-  const [alerts, setAlerts] =
-    useState<Alert[]>([]);
+  // =========================
+  // NOTIFICATIONS
+  // =========================
+  const [
+    notifications,
+    setNotifications,
+  ] = useState<Notification[]>([]);
+
+  // =========================
+  // ALERTS
+  // =========================
+  const [
+    alerts,
+    setAlerts,
+  ] = useState<any[]>([]);
 
   const fullName =
     [user?.nom, user?.prenom]
@@ -416,31 +628,63 @@ export default function Topbar({
      LOGOUT
   ========================= */
   const handleLogout = () => {
+
     logout();
 
     navigate("/login");
   };
 
   /* =========================
+     LOAD NOTIFICATIONS
+  ========================= */
+  const loadNotifications =
+    async () => {
+
+      try {
+
+        const data =
+          await notificationsService
+            .getMyNotifications();
+
+        setNotifications(
+          data ?? []
+        );
+
+      } catch (
+        error
+      ) {
+
+        console.error(
+          "❌ NOTIFICATIONS ERROR:",
+          error
+        );
+
+        setNotifications([]);
+      }
+    };
+
+  /* =========================
      LOAD ALERTS
   ========================= */
   const loadAlerts =
     async () => {
+
       try {
-        const res =
-          await api.get(
-            "/alertes"
-          );
+
+        const data =
+          await alertsService
+            .getAlerts();
 
         setAlerts(
-          res.data?.data ??
-            []
+          data ?? []
         );
+
       } catch (
         error
       ) {
+
         console.error(
-          "❌ ALERT LOAD ERROR:",
+          "❌ ALERTS ERROR:",
           error
         );
 
@@ -448,22 +692,79 @@ export default function Topbar({
       }
     };
 
+  /* =========================
+     AUTO REFRESH
+  ========================= */
   useEffect(() => {
+
+    loadNotifications();
+
     loadAlerts();
 
     const interval =
-      setInterval(
-        loadAlerts,
-        15000
-      );
+      setInterval(() => {
+
+        loadNotifications();
+
+        loadAlerts();
+
+      }, 15000);
 
     return () =>
       clearInterval(
         interval
       );
+
   }, []);
 
+  // =========================
+  // MERGED DATA
+  // =========================
+  const mergedNotifications =
+    useMemo(() => {
+
+      return [
+
+        ...notifications.map(
+          (n) => ({
+            ...n,
+            source:
+              "notification",
+          })
+        ),
+
+        ...alerts.map(
+          (a) => ({
+            ...a,
+            source: "alert",
+            lu: a.is_read,
+            id_notification:
+              a.id_alerte,
+          })
+        ),
+      ]
+        .sort(
+
+          (a, b) =>
+
+            new Date(
+              b.date_creation
+            ).getTime()
+
+            -
+
+            new Date(
+              a.date_creation
+            ).getTime()
+        );
+
+    }, [
+      notifications,
+      alerts,
+    ]);
+
   return (
+
     <header className="flex h-16 items-center justify-between border-b border-slate-200 bg-white px-4 sm:px-6 dark:border-slate-800 dark:bg-slate-900">
 
       {/* LEFT */}
@@ -476,10 +777,12 @@ export default function Topbar({
           }
           className="rounded-2xl border border-slate-300 p-2 hover:bg-slate-100 dark:border-slate-700 dark:hover:bg-slate-800 lg:hidden"
         >
+
           <Menu size={20} />
         </button>
 
         <div>
+
           <h1 className="text-base font-extrabold text-slate-900 dark:text-white sm:text-lg">
             Tableau de bord
           </h1>
@@ -489,23 +792,32 @@ export default function Topbar({
             {fullName}
           </p>
         </div>
-
       </div>
 
       {/* RIGHT */}
       <div className="flex items-center gap-2 sm:gap-3">
 
+        {/* THEME */}
         <ThemeDropdown />
 
+        {/* NOTIFICATIONS */}
         <NotificationsDropdown
-          alerts={alerts}
-          reloadAlerts={
-            loadAlerts
+          notifications={
+            mergedNotifications
+          }
+          reloadNotifications={
+            async () => {
+
+              await loadNotifications();
+
+              await loadAlerts();
+            }
           }
         />
 
         {/* USER */}
         <div className="hidden rounded-2xl bg-slate-100 px-4 py-2 text-sm font-semibold dark:bg-slate-800 dark:text-white md:block">
+
           {fullName}
         </div>
 

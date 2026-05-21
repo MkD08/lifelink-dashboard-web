@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { api } from "../../../lib/axios";
 
 import { directorsService } from "../services/directors.service";
+import LocationSelect from "../../../components/common/LocationSelect";
 
 import { useToast } from "../../auth/store/toast.store";
 
@@ -271,35 +272,23 @@ export default function CreateDirectorForm() {
           required
         />
 
-        {/* VILLE */}
-        <input
-          type="text"
-          placeholder="Ville"
-          value={form.ville}
-          onChange={(e) =>
-            updateField(
-              "ville",
-              e.target.value
-            )
-          }
-          className={inputStyle}
-          required
-        />
+        {/* LOCALISATION */}
+<div className="md:col-span-2">
 
-        {/* QUARTIER */}
-        <input
-          type="text"
-          placeholder="Quartier"
-          value={form.quartier}
-          onChange={(e) =>
-            updateField(
-              "quartier",
-              e.target.value
-            )
-          }
-          className={`${inputStyle} md:col-span-2`}
-          required
-        />
+<LocationSelect
+  ville={form.ville}
+  quartier={form.quartier}
+
+  onVilleChange={(value) =>
+    updateField("ville", value)
+  }
+
+  onQuartierChange={(value) =>
+    updateField("quartier", value)
+  }
+/>
+
+</div>
 
         {/* CENTRE */}
         <select

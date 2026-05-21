@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import type { Centre } from "../types/centre.types";
 import { centresService } from "../services/centres.service";
 import { useToast } from "../../auth/store/toast.store";
+import LocationSelect from "../../../components/common/LocationSelect";
 
 type Props = {
   centre: Centre | null;
@@ -19,6 +20,7 @@ export default function EditCentreModal({
   const [form, setForm] = useState({
     nom: "",
     ville: "",
+    quartier: "",
     adresse: "",
     latitude: "",
     longitude: "",
@@ -35,6 +37,7 @@ export default function EditCentreModal({
       setForm({
         nom: centre.nom ?? "",
         ville: centre.ville ?? "",
+        quartier: "",
         adresse: centre.adresse ?? "",
         latitude:
           centre.latitude !== null && centre.latitude !== undefined
@@ -68,7 +71,11 @@ export default function EditCentreModal({
       await centresService.updateCentre(centre.id_centre, {
         nom: form.nom.trim(),
         ville: form.ville.trim(),
-        adresse: form.adresse.trim(),
+        adresse:
+  (
+    form.adresse ||
+    `${form.quartier}${form.quartier ? ", " : ""}${form.ville}`
+  ).trim(),
         latitude: Number(form.latitude),
         longitude: Number(form.longitude),
         telephone: form.telephone.trim() || null,
@@ -122,33 +129,29 @@ export default function EditCentreModal({
             required
           />
 
-          <input
-            type="text"
-            placeholder="Ville"
-            value={form.ville}
-            onChange={(e) => updateField("ville", e.target.value)}
-            className="
-              rounded-2xl
-              border border-slate-300
-              bg-white
-              px-4 py-3
-              text-slate-900
-              outline-none
-              focus:border-red-500
+<div className="md:col-span-2">
+  <LocationSelect
+    ville={form.ville}
+    quartier={form.quartier}
+    onVilleChange={(value) =>
+      updateField("ville", value)
+    }
+    onQuartierChange={(value) =>
+      updateField("quartier", value)
+    }
+  />
+</div>
 
-              dark:border-slate-700
-              dark:bg-slate-800
-              dark:text-white
-              dark:placeholder:text-slate-400
-            "
-            required
-          />
-
-          <input
-            type="text"
-            placeholder="Adresse"
-            value={form.adresse}
-            onChange={(e) => updateField("adresse", e.target.value)}
+<input
+  type="text"
+  placeholder="Adresse complète"
+  value={
+    form.adresse ||
+    `${form.quartier}${form.quartier ? ", " : ""}${form.ville}`
+  }
+  onChange={(e) =>
+    updateField("adresse", e.target.value)
+  }
             className="
               rounded-2xl
               border border-slate-300

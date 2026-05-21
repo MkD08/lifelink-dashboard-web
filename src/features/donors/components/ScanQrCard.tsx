@@ -1,8 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 
-import {
-  Html5QrcodeScanner,
-} from "html5-qrcode";
+import { Html5Qrcode } from "html5-qrcode";
 
 import {
   QrCode,
@@ -60,124 +58,104 @@ export default function ScanQrCard() {
   // =========================
   // START CAMERA
   // =========================
-  const startScanner =
-    async () => {
-      console.log(
-        "📷 START CAMERA"
-      );
-
-      if (
-        scannerRef.current
-      ) {
-        console.log(
-          "⚠️ Scanner already running"
-        );
-
-        return;
-      }
-
+  const startScanner = async () => {
+    try {
+      if (scannerRef.current) return;
+  
       setCameraOpen(true);
-
+  
       showToast(
         "Démarrage caméra...",
         "success"
       );
-
-      // 🔥 WAIT REACT RENDER
-      setTimeout(() => {
-        const scanner =
-          new Html5QrcodeScanner(
-            "qr-reader",
-            {
-              fps: 5,
-
-              qrbox: {
-                width: 250,
-                height: 250,
-              },
-
-              rememberLastUsedCamera:
-                true,
-            },
-            false
+  
+      setTimeout(async () => {
+        const html5QrCode =
+          new Html5Qrcode("qr-reader");
+  
+        scannerRef.current =
+          html5QrCode;
+  
+        const cameras =
+          await Html5Qrcode.getCameras();
+  
+        if (!cameras.length) {
+          throw new Error(
+            "Aucune caméra détectée"
           );
-
-        console.log(
-          "🔥 SCANNER INIT"
-        );
-
-        console.log(
-          "DOM:",
-          document.getElementById(
-            "qr-reader"
-          )
-        );
-
-        scanner.render(
+        }
+  
+        await html5QrCode.start(
+          {
+            facingMode: "environment",
+          },
+  
+          {
+            fps: 10,
+  
+            qrbox: {
+              width: 250,
+              height: 250,
+            },
+          },
+  
           async (
             decodedText
           ) => {
             console.log(
-              "✅ QR DETECTED:",
+              "QR DETECTED:",
               decodedText
             );
-
+  
             setQrData(
               decodedText
             );
-
-            await scanner.clear();
-
-            scannerRef.current =
-              null;
-
-            setCameraOpen(false);
-
+  
+            await stopScanner();
+  
             showToast(
               "QR détecté avec succès",
               "success"
             );
-
+  
             await handleScan(
               decodedText
             );
           },
-
-          (
-            scanError
-          ) => {
-            console.log(
-              "📛 CAMERA DEBUG:",
-              scanError
-            );
-          }
+  
+          () => {}
         );
-
-        scannerRef.current =
-          scanner;
       }, 300);
-    };
+    } catch (err) {
+      console.error(err);
+  
+      setCameraOpen(false);
+  
+      showToast(
+        "Impossible d’ouvrir la caméra",
+        "error"
+      );
+    }
+  };
 
   // =========================
   // STOP CAMERA
   // =========================
-  const stopScanner =
-    async () => {
-      console.log(
-        "🛑 STOP CAMERA"
-      );
-
-      if (
-        scannerRef.current
-      ) {
+  const stopScanner = async () => {
+    try {
+      if (scannerRef.current) {
+        await scannerRef.current.stop();
+  
         await scannerRef.current.clear();
-
-        scannerRef.current =
-          null;
+  
+        scannerRef.current = null;
       }
-
-      setCameraOpen(false);
-    };
+    } catch (err) {
+      console.error(err);
+    }
+  
+    setCameraOpen(false);
+  };
 
   // =========================
   // HANDLE SCAN
