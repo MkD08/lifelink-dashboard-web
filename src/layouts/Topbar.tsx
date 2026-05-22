@@ -445,12 +445,15 @@ function NotificationsDropdown({
 
 <div
   className="
-    absolute right-0 top-full z-[9999] mt-3
+    fixed
 
-    w-[calc(100vw-32px)]
+    right-3 top-20
+    z-[9999]
+
+    w-[calc(100vw-24px)]
     max-w-sm
 
-    overflow-visible
+    overflow-hidden
     rounded-[24px]
 
     border border-slate-200
@@ -459,10 +462,9 @@ function NotificationsDropdown({
 
     dark:border-slate-700
     dark:bg-slate-900
+
+    sm:right-6
   "
-  style={{
-    right: 0,
-  }}
 >
 
           {/* HEADER */}

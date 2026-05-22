@@ -49,7 +49,13 @@ export default function DashboardLayout() {
         {/* ========================= */}
         {/* CONTENT */}
         {/* ========================= */}
-        <div className="flex min-w-0 flex-1 flex-col lg:ml-72">
+        <div
+  className="
+    flex min-w-0 flex-1 flex-col
+    overflow-visible
+    lg:ml-72
+  "
+>
 
           {/* TOPBAR */}
           <div className="fixed left-0 right-0 top-0 z-30 lg:left-72">
@@ -61,7 +67,18 @@ export default function DashboardLayout() {
           </div>
 
           {/* MAIN */}
-          <main className="mt-16 h-[calc(100vh-64px)] overflow-y-auto p-4 sm:p-6 min-w-0">
+          <main
+  className="
+    mt-16
+    h-[calc(100vh-64px)]
+
+    overflow-x-hidden
+    overflow-y-auto
+
+    p-4 sm:p-6
+    min-w-0
+  "
+>
             <Outlet />
           </main>
 
