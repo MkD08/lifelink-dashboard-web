@@ -10,7 +10,7 @@ export default function DashboardLayout() {
     useState(false);
 
   return (
-    <div className="h-screen overflow-hidden bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-white">
+    <div className="h-screen overflow-visible bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-white">
 
       <div className="flex h-screen">
 

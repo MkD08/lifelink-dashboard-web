@@ -154,15 +154,23 @@ function ThemeDropdown() {
 
       {open && (
 
-        <div className="
-          absolute right-0 z-50 mt-2
-          w-[92vw] max-w-sm
-          rounded-2xl
-          border border-slate-200
-          bg-white shadow-xl
-          dark:border-slate-700
-          dark:bg-slate-900
-        ">
+<div
+className="
+  absolute right-0 top-full z-[9999] mt-3
+
+  w-44 sm:w-48
+
+  overflow-hidden
+  rounded-2xl
+
+  border border-slate-200
+  bg-white
+  shadow-2xl
+
+  dark:border-slate-700
+  dark:bg-slate-900
+"
+>
 
           {[
             "light",
@@ -180,7 +188,15 @@ function ThemeDropdown() {
 
                 setOpen(false);
               }}
-              className="block w-full px-4 py-2 text-left text-sm capitalize hover:bg-slate-100 dark:hover:bg-slate-800"
+              className="
+  block w-full
+  px-4 py-3
+  text-left text-sm font-medium
+  capitalize
+  transition
+  hover:bg-slate-100
+  dark:hover:bg-slate-800
+"
             >
               {t}
             </button>
@@ -428,22 +444,25 @@ function NotificationsDropdown({
       {open && (
 
 <div
-className="
-  absolute right-0 z-50 mt-2
+  className="
+    absolute right-0 top-full z-[9999] mt-3
 
-  w-[92vw]
-  max-w-sm
+    w-[calc(100vw-32px)]
+    max-w-sm
 
-  overflow-hidden
-  rounded-[24px]
+    overflow-hidden
+    rounded-[24px]
 
-  border border-slate-200
-  bg-white
-  shadow-2xl
+    border border-slate-200
+    bg-white
+    shadow-2xl
 
-  dark:border-slate-700
-  dark:bg-slate-900
-"
+    dark:border-slate-700
+    dark:bg-slate-900
+  "
+  style={{
+    right: 0,
+  }}
 >
 
           {/* HEADER */}
@@ -782,7 +801,24 @@ export default function Topbar({
 
   return (
 
-    <header className="flex h-16 items-center justify-between border-b border-slate-200 bg-white px-4 sm:px-6 dark:border-slate-800 dark:bg-slate-900">
+    <header
+  className="
+    relative z-40
+
+    flex h-16
+    items-center justify-between
+
+    overflow-visible
+
+    border-b border-slate-200
+    bg-white
+
+    px-3 sm:px-6
+
+    dark:border-slate-800
+    dark:bg-slate-900
+  "
+>
 
       {/* LEFT */}
       <div className="flex items-center gap-3">
@@ -812,7 +848,7 @@ export default function Topbar({
       </div>
 
       {/* RIGHT */}
-      <div className="flex items-center gap-2 sm:gap-3">
+      <div className="flex items-center gap-2 overflow-visible">
 
         {/* THEME */}
         <ThemeDropdown />
