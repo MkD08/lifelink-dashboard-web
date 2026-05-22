@@ -160,7 +160,7 @@ className="
 
   w-44 sm:w-48
 
-  overflow-hidden
+  overflow-visible
   rounded-2xl
 
   border border-slate-200
@@ -450,7 +450,7 @@ function NotificationsDropdown({
     w-[calc(100vw-32px)]
     max-w-sm
 
-    overflow-hidden
+    overflow-visible
     rounded-[24px]
 
     border border-slate-200
