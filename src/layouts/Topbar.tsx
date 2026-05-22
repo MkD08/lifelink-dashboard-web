@@ -427,7 +427,24 @@ function NotificationsDropdown({
       {/* DROPDOWN */}
       {open && (
 
-        <div className="absolute right-0 z-50 mt-2 w-96 overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-2xl dark:border-slate-700 dark:bg-slate-900">
+<div
+className="
+  absolute right-0 z-50 mt-2
+
+  w-[92vw]
+  max-w-sm
+
+  overflow-hidden
+  rounded-[24px]
+
+  border border-slate-200
+  bg-white
+  shadow-2xl
+
+  dark:border-slate-700
+  dark:bg-slate-900
+"
+>
 
           {/* HEADER */}
           <div className="flex items-center justify-between border-b border-slate-200 p-4 dark:border-slate-700">
@@ -456,7 +473,7 @@ function NotificationsDropdown({
           </div>
 
           {/* LIST */}
-          <div className="max-h-[400px] overflow-y-auto">
+          <div className="max-h-[70vh] overflow-y-auto">
 
             {sortedNotifications.length === 0 && (
 
