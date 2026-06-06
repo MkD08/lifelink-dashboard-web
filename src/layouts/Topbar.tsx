@@ -759,19 +759,24 @@ export default function Topbar({
   // MERGED DATA
   // =========================
   const mergedNotifications =
-    useMemo(() => {
+  useMemo(() => {
 
-      return [
+    return [
 
-        ...notifications.map(
-          (n) => ({
-            ...n,
-            source:
-              "notification",
-          })
-        ),
+      ...notifications.map(
+        (n) => ({
+          ...n,
+          source: "notification",
+        })
+      ),
 
-        ...alerts.map(
+      ...alerts
+        .filter(
+          (a) =>
+            a.created_by !==
+            user?.id_utilisateur
+        )
+        .map(
           (a) => ({
             ...a,
             source: "alert",
@@ -780,26 +785,25 @@ export default function Topbar({
               a.id_alerte,
           })
         ),
-      ]
-        .sort(
+    ]
+      .sort(
+        (a, b) =>
+          new Date(
+            b.date_creation
+          ).getTime()
 
-          (a, b) =>
+          -
 
-            new Date(
-              b.date_creation
-            ).getTime()
+          new Date(
+            a.date_creation
+          ).getTime()
+      );
 
-            -
-
-            new Date(
-              a.date_creation
-            ).getTime()
-        );
-
-    }, [
-      notifications,
-      alerts,
-    ]);
+  }, [
+    notifications,
+    alerts,
+    user,
+  ]);
 
   return (
 

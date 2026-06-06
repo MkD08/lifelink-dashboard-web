@@ -42,6 +42,10 @@ export default function Sidebar({
       label: "Donneurs",
       path: "/donors",
     },
+    {
+      label: "Utilisateurs vérifiés",
+      path: "/admin/verified-users",
+    },
 
     {
       label: "Demandes",
@@ -133,6 +137,15 @@ export default function Sidebar({
       label: "Scan QR",
       path: "/scan-qr",
     },
+    {
+      label: "Utilisateurs à vérifier",
+      path: "/users-to-verify",
+    },
+    
+    {
+      label: "Utilisateurs vérifiés",
+      path: "/verified-users",
+    },
   ];
 
   // ==============================
@@ -178,6 +191,15 @@ export default function Sidebar({
     {
       label: "Scan QR",
       path: "/scan-qr",
+    },
+    {
+      label: "Utilisateurs à vérifier",
+      path: "/users-to-verify",
+    },
+    
+    {
+      label: "Utilisateurs vérifiés",
+      path: "/verified-users",
     },
 
     {

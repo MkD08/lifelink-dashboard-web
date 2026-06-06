@@ -211,10 +211,24 @@ export default function ScanQrCard() {
 
         setError(message);
 
-        showToast(
-          message,
-          "error"
-        );
+        if (
+          message.includes(
+            "période de récupération"
+          )
+        ) {
+        
+          showToast(
+            "⚠️ Donneur temporairement inéligible",
+            "info"
+          );
+        
+        } else {
+        
+          showToast(
+            message,
+            "error"
+          );
+        }
       } finally {
         setLoading(false);
       }

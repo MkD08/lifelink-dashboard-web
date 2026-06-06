@@ -9,7 +9,16 @@ type Props = {
   onSubmit: (bloodGroup: string) => Promise<void>;
 };
 
-const bloodGroups = ["O+", "O-", "A+", "A-", "B+", "B-", "AB+", "AB-"];
+const bloodGroups = [
+  "O+",
+  "O-",
+  "A+",
+  "A-",
+  "B+",
+  "B-",
+  "AB+",
+  "AB-",
+];
 
 export default function VerifyBloodGroupModal({
   donorId,
@@ -19,11 +28,14 @@ export default function VerifyBloodGroupModal({
   onClose,
   onSubmit,
 }: Props) {
-  const [selectedGroup, setSelectedGroup] = useState("");
+  const [selectedGroup, setSelectedGroup] =
+    useState("");
 
   if (!isOpen) return null;
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (
+    e: React.FormEvent
+  ) => {
     e.preventDefault();
 
     if (!selectedGroup) return;
@@ -32,45 +44,115 @@ export default function VerifyBloodGroupModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
-      <div className="w-full max-w-md rounded-[24px] bg-white dark:bg-slate-900 p-6 shadow-2xl">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
+
+      <div
+        className="
+          w-full max-w-md
+          rounded-[24px]
+          border border-slate-200
+          bg-white
+          p-6
+          shadow-2xl
+
+          dark:border-slate-700
+          dark:bg-slate-900
+        "
+      >
         <div className="mb-5">
+
           <h3 className="text-xl font-extrabold text-slate-900 dark:text-white">
             Vérifier le groupe sanguin
           </h3>
-          <p className="mt-2 text-sm text-slate-500">
-            Donneur : <span className="font-semibold">{donorName}</span>
+
+          <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
+            Donneur :
+            <span className="font-semibold text-slate-700 dark:text-slate-300">
+              {" "}
+              {donorName}
+            </span>
           </p>
-          <p className="text-sm text-slate-500">
-            ID : <span className="font-semibold">{donorId}</span>
+
+          <p className="text-sm text-slate-500 dark:text-slate-400">
+            ID :
+            <span className="font-semibold text-slate-700 dark:text-slate-300">
+              {" "}
+              {donorId}
+            </span>
           </p>
+
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-5">
+        <form
+          onSubmit={handleSubmit}
+          className="space-y-5"
+        >
           <div>
-            <label className="mb-2 block text-sm font-semibold text-slate-700">
+
+            <label className="mb-2 block text-sm font-semibold text-slate-700 dark:text-slate-300">
               Groupe sanguin validé
             </label>
+
             <select
               value={selectedGroup}
-              onChange={(e) => setSelectedGroup(e.target.value)}
-              className="w-full rounded-2xl border border-slate-300 px-4 py-3 outline-none focus:border-red-500"
+              onChange={(e) =>
+                setSelectedGroup(
+                  e.target.value
+                )
+              }
+              className="
+                w-full
+                rounded-2xl
+                border border-slate-300
+                bg-white
+                px-4 py-3
+                text-slate-900
+                outline-none
+                focus:border-red-500
+
+                dark:border-slate-700
+                dark:bg-slate-800
+                dark:text-white
+              "
               required
             >
-              <option value="">Choisir un groupe sanguin</option>
-              {bloodGroups.map((group) => (
-                <option key={group} value={group}>
-                  {group}
-                </option>
-              ))}
+              <option value="">
+                Choisir un groupe sanguin
+              </option>
+
+              {bloodGroups.map(
+                (group) => (
+                  <option
+                    key={group}
+                    value={group}
+                  >
+                    {group}
+                  </option>
+                )
+              )}
             </select>
+
           </div>
 
           <div className="flex gap-3">
+
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 rounded-2xl border border-slate-300 px-4 py-3 font-semibold text-slate-700 hover:bg-slate-50"
+              className="
+                flex-1
+                rounded-2xl
+                border border-slate-300
+                px-4 py-3
+                font-semibold
+                text-slate-700
+                hover:bg-slate-50
+
+                dark:border-slate-700
+                dark:bg-slate-800
+                dark:text-white
+                dark:hover:bg-slate-700
+              "
             >
               Annuler
             </button>
@@ -78,10 +160,22 @@ export default function VerifyBloodGroupModal({
             <button
               type="submit"
               disabled={isLoading}
-              className="flex-1 rounded-2xl bg-red-600 px-4 py-3 font-bold text-white hover:bg-red-700 disabled:opacity-60"
+              className="
+                flex-1
+                rounded-2xl
+                bg-red-600
+                px-4 py-3
+                font-bold
+                text-white
+                hover:bg-red-700
+                disabled:opacity-60
+              "
             >
-              {isLoading ? "Validation..." : "Valider"}
+              {isLoading
+                ? "Validation..."
+                : "Valider"}
             </button>
+
           </div>
         </form>
       </div>

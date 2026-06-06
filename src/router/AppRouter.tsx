@@ -16,6 +16,9 @@ import NotificationsPage from "../features/notifications/pages/NotificationsPage
 import ScanQrPage from "../features/donors/pages/ScanQrPage";
 import AdminUsersPage from "../features/admin-users/pages/AdminUsersPage";
 import DirectorsPage from "../features/directors/pages/DirectorsPage";
+import UsersToVerifyPage from "../features/donors/pages/UsersToVerifyPage";
+import VerifiedUsersPage from "../features/donors/pages/VerifiedUsersPage";
+import AdminVerifiedUsersPage from "../features/donors/pages/AdminVerifiedUsersPage";
 import DashboardLayout from "../layouts/DashboardLayout";
 import AuthGuard from "../lib/auth-guard";
 import RoleGuard from "../lib/role-guard";
@@ -59,6 +62,14 @@ export default function AppRouter() {
             </RoleGuard>
           }
         />
+        <Route
+  path="/admin/verified-users"
+  element={
+    <RoleGuard allowedRoles={[1]}>
+      <AdminVerifiedUsersPage />
+    </RoleGuard>
+  }
+/>
 
         <Route
           path="/donors"
@@ -97,6 +108,23 @@ export default function AppRouter() {
   element={
     <RoleGuard allowedRoles={[3, 4]}>
       <ScanQrPage />
+    </RoleGuard>
+  }
+/>
+<Route
+  path="/users-to-verify"
+  element={
+    <RoleGuard allowedRoles={[3, 4]}>
+      <UsersToVerifyPage />
+    </RoleGuard>
+  }
+/>
+
+<Route
+  path="/verified-users"
+  element={
+    <RoleGuard allowedRoles={[3, 4]}>
+      <VerifiedUsersPage />
     </RoleGuard>
   }
 />
