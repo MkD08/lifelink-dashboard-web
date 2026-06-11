@@ -51,6 +51,9 @@ export default function CreateAlertModal({
   const [groupe, setGroupe] =
     useState("");
 
+  const [quantite, setQuantite] =
+    useState<number | "">("");  
+
   const [ville, setVille] =
     useState("");
 
@@ -229,17 +232,7 @@ export default function CreateAlertModal({
           return;
         }
 
-        if (!message) {
-
-          showToast(
-            "Le message est obligatoire",
-            "error"
-          );
-
-          return;
-        }
-
-        if (
+          if (
           type ===
             "urgent" &&
           !groupe
@@ -250,6 +243,19 @@ export default function CreateAlertModal({
             "error"
           );
 
+          return;
+        }
+
+        if (
+          type === "urgent" &&
+          (!quantite || quantite <= 0)
+        ) {
+        
+          showToast(
+            "La quantité est obligatoire",
+            "error"
+          );
+        
           return;
         }
 
@@ -271,7 +277,11 @@ export default function CreateAlertModal({
               "urgent"
                 ? groupe
                 : undefined,
-
+            
+                quantite:
+                type === "urgent"
+                  ? Number(quantite)
+                  : undefined,    
             ville,
 
             quartier,
@@ -302,6 +312,8 @@ export default function CreateAlertModal({
         );
 
         setGroupe("");
+
+        setQuantite("");
 
         setVille("");
 
@@ -430,6 +442,7 @@ export default function CreateAlertModal({
               setGroupe(
                 ""
               );
+              setQuantite("");
             }
           }}
           className="
@@ -548,6 +561,67 @@ export default function CreateAlertModal({
 
         </select>
 
+        {/* QUANTITE */}
+
+<input
+  type="number"
+  min="1"
+
+  disabled={
+    type !== "urgent"
+  }
+
+  value={quantite}
+
+  onChange={(e) =>
+    setQuantite(
+      e.target.value
+        ? Number(
+            e.target.value
+          )
+        : ""
+    )
+  }
+
+  placeholder={
+    type === "urgent"
+      ? "Quantité demandée"
+      : "Non nécessaire"
+  }
+
+  className={`
+    w-full
+    rounded-2xl
+    border
+    px-4 py-3
+    outline-none
+
+    ${
+      type === "urgent"
+
+        ? `
+          border-slate-300
+          bg-white
+          focus:border-red-500
+
+          dark:border-slate-700
+          dark:bg-slate-800
+          dark:text-white
+        `
+
+        : `
+          cursor-not-allowed
+          border-slate-200
+          bg-slate-100
+          text-slate-400
+
+          dark:border-slate-800
+          dark:bg-slate-900
+        `
+    }
+  `}
+/>
+
         {/* LOCATION */}
         <LocationSelect
           ville={ville}
@@ -573,7 +647,8 @@ export default function CreateAlertModal({
         />
 
         {/* GLOBAL */}
-        {isAdmin && (
+        {isAdmin &&
+ type !== "urgent" && (
 
           <div className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 dark:border-slate-700 dark:bg-slate-800">
 

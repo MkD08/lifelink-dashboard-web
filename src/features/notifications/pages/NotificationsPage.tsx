@@ -164,6 +164,56 @@ export default function NotificationsPage() {
       }
     };
 
+    const markAllAsRead =
+  async () => {
+
+    try {
+
+      await notificationsService
+        .markAllAsRead();
+
+      showToast(
+        "Toutes les notifications ont été marquées comme lues",
+        "success"
+      );
+
+      await loadNotifications();
+
+    } catch (err: any) {
+
+      showToast(
+        err.message ||
+        "Erreur",
+        "error"
+      );
+    }
+  };
+
+const deleteAllReadNotifications =
+  async () => {
+
+    try {
+
+      await notificationsService
+        .deleteAllReadNotifications();
+
+      showToast(
+        "Notifications supprimées",
+        "success"
+      );
+
+      await loadNotifications();
+
+    } catch (err: any) {
+
+      showToast(
+        err.message ||
+        "Erreur",
+        "error"
+      );
+    }
+  };
+
   useEffect(() => {
 
     loadNotifications();
@@ -186,6 +236,23 @@ export default function NotificationsPage() {
           Notifications du système médical et des demandes de sang.
         </p>
       </div>
+      <div className="mt-4 flex flex-wrap gap-3">
+
+  <button
+    onClick={markAllAsRead}
+    className="rounded-xl bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700"
+  >
+    Tout marquer comme lu
+  </button>
+
+  <button
+    onClick={deleteAllReadNotifications}
+    className="rounded-xl bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-700"
+  >
+    Supprimer les notifications lues
+  </button>
+
+</div>
 
       {/* CONTENT */}
 

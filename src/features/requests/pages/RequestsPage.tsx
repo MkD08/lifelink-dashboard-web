@@ -32,6 +32,9 @@ const statusStyles: Record<RequestStatus, string> = {
   TERMINE:
     "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300",
 
+  DELIVREE:
+    "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300",
+
   ANNULE:
     "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300",
 
@@ -48,6 +51,33 @@ export default function RequestsPage() {
     useState(true);
 
   const { showToast } = useToast();
+
+  const handleDelivrer =
+  async (id_demande: number) => {
+
+    try {
+
+      await requestsService
+        .delivrerRequest(
+          id_demande
+        );
+
+      showToast(
+        "Poche remise au patient",
+        "success"
+      );
+
+      await loadRequests();
+
+    } catch (err: any) {
+
+      showToast(
+        err.message ||
+        "Erreur",
+        "error"
+      );
+    }
+  };
 
   // ==============================
   // LOAD DATA
@@ -317,6 +347,53 @@ export default function RequestsPage() {
                     ).toLocaleDateString()}
                   </span>
                 </div>
+
+                {/* ACTIONS */}
+
+{req.statut === "TERMINE" && (
+
+<button
+  onClick={() =>
+    handleDelivrer(
+      req.id_demande
+    )
+  }
+  className="
+    mt-4
+    w-full
+    rounded-xl
+    bg-emerald-600
+    px-4
+    py-3
+    font-semibold
+    text-white
+    hover:bg-emerald-700
+  "
+>
+  Remettre au patient
+</button>
+)}
+
+{req.statut === "DELIVREE" && (
+
+<div
+  className="
+    mt-4
+    rounded-xl
+    bg-emerald-100
+    px-4
+    py-3
+    text-center
+    font-semibold
+    text-emerald-700
+
+    dark:bg-emerald-900/30
+    dark:text-emerald-300
+  "
+>
+  ✓ Poche remise au patient
+</div>
+)}
               </div>
             </div>
           ))}

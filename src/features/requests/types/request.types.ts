@@ -11,9 +11,10 @@ export type RequestStatus =
   | "EN_COURS"
   | "VALIDE"
   | "TERMINE"
+  | "DELIVREE"
   | "ANNULE"
   | "REFUSE";
-
+  
 // ==============================
 // Centre lié à une demande
 // ==============================

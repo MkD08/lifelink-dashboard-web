@@ -39,6 +39,16 @@ export default function Sidebar({
     },
 
     {
+      label: "Administrateurs",
+      path: "/admins",
+    },
+    
+    // {
+    //   label: "Mon profil admin",
+    //   path: "/admin/profile",
+    // },
+
+    {
       label: "Donneurs",
       path: "/donors",
     },
@@ -71,25 +81,26 @@ export default function Sidebar({
       label: "Utilisateurs",
       path: "/admin/users",
     },
-
-    {
-      label: "Collectes",
-      path: "/collectes",
-    },
+ 
 
     {
       label: "Alertes",
       path: "/alerts",
     },
 
-    {
-      label: "Stocks",
-      path: "/stocks",
-    },
+    // {
+    //   label: "Stocks",
+    //   path: "/stocks",
+    // },
 
     {
       label: "Statistiques",
       path: "/statistics",
+    },
+
+    {
+      label: "Audit",
+      path: "/audit",
     },
   ];
 
@@ -211,6 +222,11 @@ export default function Sidebar({
       label: "Statistiques",
       path: "/statistics",
     },
+
+    {
+      label: "Audit",
+      path: "/audit",
+    },
   ];
 
   // ==============================
@@ -251,9 +267,13 @@ export default function Sidebar({
           {/* LOGO */}
           <div className="flex items-center gap-3">
 
-            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-red-600 text-xl text-white shadow-md">
-              ❤
-            </div>
+          <div className="flex h-16 w-16 items-center justify-center">
+  <img
+    src="/logo.png"
+    alt="LifeLink"
+    className="h-14 w-14 object-contain"
+  />
+</div>
 
             <div>
 

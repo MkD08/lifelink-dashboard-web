@@ -106,4 +106,38 @@ export const notificationsService = {
       throw error;
     }
   },
+
+/**
+ * Tout marquer comme lu
+ */
+async markAllAsRead(): Promise<void> {
+
+  await api.put(
+    "/notifications/read-all"
+  );
+},
+
+/**
+ * Supprimer une notification
+ */
+async deleteNotification(
+  id: number
+): Promise<void> {
+
+  await api.delete(
+    `/notifications/${id}`
+  );
+},
+
+/**
+ * Supprimer toutes les notifications lues
+ */
+async deleteAllReadNotifications():
+  Promise<void> {
+
+  await api.delete(
+    "/notifications/delete-read"
+  );
+},  
 };
+

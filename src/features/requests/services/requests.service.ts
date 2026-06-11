@@ -14,12 +14,6 @@ export const requestsService = {
 
   /**
    * Récupérer toutes les demandes
-   *
-   * 🔥 IMPORTANT :
-   * - Admin => toutes les demandes
-   * - Staff/Directeur => seulement son centre
-   *
-   * Le backend gère déjà le filtrage.
    */
   async getAllRequests(): Promise<BloodRequest[]> {
 
@@ -28,15 +22,10 @@ export const requestsService = {
       const response =
         await api.get("/dons/demandes");
 
-      // 🔥 DEBUG
       console.log(
         "API RESPONSE DEMANDES:",
         response.data
       );
-
-      // ==============================
-      // Vérification backend
-      // ==============================
 
       if (!response.data?.success) {
 
@@ -45,17 +34,9 @@ export const requestsService = {
         );
       }
 
-      // ==============================
-      // Retour des demandes
-      // ==============================
-
       return response.data.data ?? [];
 
     } catch (error) {
-
-      // ==============================
-      // Gestion erreurs Axios
-      // ==============================
 
       if (error instanceof AxiosError) {
 
@@ -69,10 +50,6 @@ export const requestsService = {
         );
       }
 
-      // ==============================
-      // Gestion erreurs classiques
-      // ==============================
-
       if (error instanceof Error) {
 
         throw error;
@@ -80,6 +57,56 @@ export const requestsService = {
 
       throw new Error(
         "Impossible de charger les demandes"
+      );
+    }
+  },
+
+  // ==============================
+  // Remettre la poche au patient
+  // ==============================
+
+  async delivrerRequest(
+    id_demande: number
+  ): Promise<BloodRequest> {
+
+    try {
+
+      const response =
+        await api.patch(
+          `/dons/${id_demande}/delivrer`
+        );
+
+      if (!response.data?.success) {
+
+        throw new Error(
+          response.data?.message ||
+          "Impossible de délivrer la demande"
+        );
+      }
+
+      return response.data.data;
+
+    } catch (error) {
+
+      if (error instanceof AxiosError) {
+
+        throw new Error(
+
+          error.response?.data?.message ||
+
+          error.message ||
+
+          "Impossible de délivrer la demande"
+        );
+      }
+
+      if (error instanceof Error) {
+
+        throw error;
+      }
+
+      throw new Error(
+        "Impossible de délivrer la demande"
       );
     }
   },

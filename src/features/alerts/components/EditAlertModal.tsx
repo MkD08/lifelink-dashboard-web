@@ -49,6 +49,8 @@ import {
     const [groupe, setGroupe] =
       useState("");
   
+    const [quantite, setQuantite] =
+      useState<number | "">("");  
     // =========================
     // INIT DATA
     // =========================
@@ -72,6 +74,10 @@ import {
           alert.groupe_sanguin ||
             ""
         );
+
+        setQuantite(
+          alert.quantite || ""
+        );  
       }
   
     }, [alert]);
@@ -98,16 +104,7 @@ import {
             return;
           }
   
-          if (!message) {
-  
-            showToast(
-              "Le message est obligatoire",
-              "error"
-            );
-  
-            return;
-          }
-  
+            
           if (
             type ===
               "urgent" &&
@@ -119,6 +116,19 @@ import {
               "error"
             );
   
+            return;
+          }
+
+          if (
+            type === "urgent" &&
+            (!quantite || quantite <= 0)
+          ) {
+          
+            showToast(
+              "La quantité est obligatoire",
+              "error"
+            );
+          
             return;
           }
   
@@ -141,6 +151,11 @@ import {
                 "urgent"
                   ? groupe
                   : undefined,
+
+                quantite:
+                  type === "urgent"
+                    ? Number(quantite)
+                    : undefined,    
             }
           );
   
@@ -267,6 +282,7 @@ import {
                 setGroupe(
                   ""
                 );
+                setQuantite("");
               }
             }}
             className="
@@ -384,6 +400,65 @@ import {
             </option>
   
           </select>
+
+          <input
+  type="number"
+  min="1"
+
+  disabled={
+    type !== "urgent"
+  }
+
+  value={quantite}
+
+  onChange={(e) =>
+    setQuantite(
+      e.target.value
+        ? Number(
+            e.target.value
+          )
+        : ""
+    )
+  }
+
+  placeholder={
+    type === "urgent"
+      ? "Quantité demandée"
+      : "Non nécessaire"
+  }
+
+  className={`
+    w-full
+    rounded-2xl
+    border
+    px-4 py-3
+    outline-none
+
+    ${
+      type === "urgent"
+
+        ? `
+          border-slate-300
+          bg-white
+          focus:border-red-500
+
+          dark:border-slate-700
+          dark:bg-slate-800
+          dark:text-white
+        `
+
+        : `
+          cursor-not-allowed
+          border-slate-200
+          bg-slate-100
+          text-slate-400
+
+          dark:border-slate-800
+          dark:bg-slate-900
+        `
+    }
+  `}
+/>
   
           {/* INFO */}
           <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm dark:border-slate-700 dark:bg-slate-800">

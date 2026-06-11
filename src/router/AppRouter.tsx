@@ -19,6 +19,9 @@ import DirectorsPage from "../features/directors/pages/DirectorsPage";
 import UsersToVerifyPage from "../features/donors/pages/UsersToVerifyPage";
 import VerifiedUsersPage from "../features/donors/pages/VerifiedUsersPage";
 import AdminVerifiedUsersPage from "../features/donors/pages/AdminVerifiedUsersPage";
+import AuditPage from "../features/audits/pages/AuditPage";
+import AdminsPage from "../features/admins/pages/AdminsPage";
+import MyAdminProfilePage from "../features/admins/pages/MyAdminProfilePage";
 import DashboardLayout from "../layouts/DashboardLayout";
 import AuthGuard from "../lib/auth-guard";
 import RoleGuard from "../lib/role-guard";
@@ -189,6 +192,31 @@ export default function AppRouter() {
             </RoleGuard>
           }
         />
+        <Route
+  path="/audit"
+  element={
+    <RoleGuard allowedRoles={[1, 4]}>
+      <AuditPage />
+    </RoleGuard>
+  }
+/>
+<Route
+  path="/admins"
+  element={
+    <RoleGuard allowedRoles={[1]}>
+      <AdminsPage />
+    </RoleGuard>
+  }
+/>
+
+<Route
+  path="/admin/profile"
+  element={
+    <RoleGuard allowedRoles={[1]}>
+      <MyAdminProfilePage />
+    </RoleGuard>
+  }
+/>
 
         <Route
           path="/create-staff"
@@ -199,6 +227,7 @@ export default function AppRouter() {
           }
         />
       </Route>
+      
       <Route
   path="/donors"
   element={

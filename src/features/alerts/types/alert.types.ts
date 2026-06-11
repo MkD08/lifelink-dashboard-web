@@ -42,6 +42,8 @@ export interface Alert {
 
   groupe_sanguin?: string | null;
 
+  quantite?: number | null;
+
   ville?: string | null;
 
   quartier?: string | null;
@@ -66,11 +68,13 @@ export interface Alert {
 export interface CreateAlertPayload {
   titre: string;
 
-  message: string;
+  message?: string;
 
   type: AlertType;
 
   groupe_sanguin?: string;
+
+  quantite?: number;
 
   ville?: string;
 
@@ -89,6 +93,8 @@ export interface UpdateAlertPayload {
   type?: AlertType;
 
   groupe_sanguin?: string;
+
+  quantite?: number;
 
   ville?: string;
 
