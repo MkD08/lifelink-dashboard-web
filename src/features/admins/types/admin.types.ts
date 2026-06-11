@@ -43,20 +43,19 @@ export interface AdminRole {
   
   export interface CreateAdminPayload {
     nom: string;
-  
     prenom: string;
   
-    telephone?: string;
+    telephone: string;
   
     email: string;
   
     password: string;
   
-    ville?: string;
+    ville: string;
   
-    quartier?: string;
+    quartier: string;
   
-    groupe_sanguin?: string;
+    groupe_sanguin: string;
   }
   
   export interface UpdateAdminPayload {

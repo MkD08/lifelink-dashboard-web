@@ -121,7 +121,7 @@ export default function CreateAdminModal({
           />
 
 <div className="md:col-span-2">
-<LocationSelect
+  <LocationSelect
   ville={form.ville ?? ""}
   quartier={form.quartier ?? ""}
   onVilleChange={(value) =>

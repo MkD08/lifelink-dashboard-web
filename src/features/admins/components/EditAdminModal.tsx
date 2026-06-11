@@ -133,7 +133,7 @@ export default function EditAdminModal({
           <input
             type="text"
             placeholder="Nom"
-            value={form.nom}
+            value={form.nom ?? ""}
             onChange={(e) =>
               updateField(
                 "nom",
@@ -146,7 +146,7 @@ export default function EditAdminModal({
           <input
             type="text"
             placeholder="Prénom"
-            value={form.prenom}
+            value={form.prenom ?? ""}
             onChange={(e) =>
               updateField(
                 "prenom",
@@ -159,7 +159,7 @@ export default function EditAdminModal({
           <input
             type="text"
             placeholder="Téléphone"
-            value={form.telephone}
+            value={form.telephone ?? ""}
             onChange={(e) =>
               updateField(
                 "telephone",
@@ -172,7 +172,7 @@ export default function EditAdminModal({
           <input
             type="email"
             placeholder="Email"
-            value={form.email}
+            value={form.email ?? ""}
             onChange={(e) =>
               updateField(
                 "email",
@@ -183,26 +183,26 @@ export default function EditAdminModal({
           />
 
 <div className="md:col-span-2">
-  <LocationSelect
-    ville={form.ville}
-    quartier={form.quartier}
-    onVilleChange={(value) =>
-      updateField(
-        "ville",
-        value
-      )
-    }
-    onQuartierChange={(value) =>
-      updateField(
-        "quartier",
-        value
-      )
-    }
-  />
+<LocationSelect
+  ville={form.ville ?? ""}
+  quartier={form.quartier ?? ""}
+  onVilleChange={(value) =>
+    updateField(
+      "ville",
+      value
+    )
+  }
+  onQuartierChange={(value) =>
+    updateField(
+      "quartier",
+      value
+    )
+  }
+/>
 </div>
 
 <select
-  value={form.groupe_sanguin}
+  value={form.groupe_sanguin ?? ""}
   onChange={(e) =>
     updateField(
       "groupe_sanguin",
