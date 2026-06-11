@@ -4,3 +4,7 @@ export const API_ENDPOINTS = {
   loginOffice: "/auth/login-office",
   me: "/users/me",
 };
+console.log(
+  "API BASE URL =>",
+  API_BASE_URL
+);
