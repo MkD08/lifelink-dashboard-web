@@ -121,16 +121,16 @@ export default function CreateAdminModal({
           />
 
 <div className="md:col-span-2">
-  <LocationSelect
-    ville={form.ville}
-    quartier={form.quartier}
-    onVilleChange={(value) =>
-      updateField("ville", value)
-    }
-    onQuartierChange={(value) =>
-      updateField("quartier", value)
-    }
-  />
+<LocationSelect
+  ville={form.ville ?? ""}
+  quartier={form.quartier ?? ""}
+  onVilleChange={(value) =>
+    updateField("ville", value)
+  }
+  onQuartierChange={(value) =>
+    updateField("quartier", value)
+  }
+/>
 </div>
 
 <select
