@@ -7,7 +7,7 @@ import { adminsService } from "../services/admins.service";
 import UpdateMyProfileModal from "../components/UpdateMyProfileModal";
 import ChangePasswordModal from "../components/ChangePasswordModal";
 
-export default function MyAdminProfilePage() {
+export default function ProfilePage(){
   const { showToast } = useToast();
 
   const [isProfileModalOpen, setIsProfileModalOpen] =
@@ -180,9 +180,13 @@ export default function MyAdminProfilePage() {
     <>
       <div className="space-y-6">
         <div>
-          <h1 className="text-3xl font-extrabold text-slate-900 dark:text-white">
-            Mon profil
-          </h1>
+        <h1 className="text-3xl font-extrabold text-slate-900 dark:text-white">
+  Mon profil
+</h1>
+
+<p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
+  Consultez et mettez à jour vos informations personnelles.
+</p>
 
           <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
             Consultez vos informations personnelles

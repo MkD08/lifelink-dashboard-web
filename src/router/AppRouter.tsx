@@ -21,7 +21,7 @@ import VerifiedUsersPage from "../features/donors/pages/VerifiedUsersPage";
 import AdminVerifiedUsersPage from "../features/donors/pages/AdminVerifiedUsersPage";
 import AuditPage from "../features/audits/pages/AuditPage";
 import AdminsPage from "../features/admins/pages/AdminsPage";
-import MyAdminProfilePage from "../features/admins/pages/MyAdminProfilePage";
+import MyAdminProfilePage from "../features/admins/pages/ProfilePage";
 import DashboardLayout from "../layouts/DashboardLayout";
 import AuthGuard from "../lib/auth-guard";
 import RoleGuard from "../lib/role-guard";
@@ -210,9 +210,9 @@ export default function AppRouter() {
 />
 
 <Route
-  path="/admin/profile"
+  path="/profile"
   element={
-    <RoleGuard allowedRoles={[1]}>
+    <RoleGuard allowedRoles={[1, 3, 4]}>
       <MyAdminProfilePage />
     </RoleGuard>
   }

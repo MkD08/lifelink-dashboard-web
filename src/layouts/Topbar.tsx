@@ -877,7 +877,7 @@ export default function Topbar({
 
         {/* PROFILE */}
 <button
-  onClick={() => navigate("/admin/profile")}
+  onClick={() => navigate("/profile")}
   className="
     rounded-2xl
     border border-slate-300
