@@ -1,65 +1,77 @@
-import type { Donor } from "../../donors/types/donor.types";
-import type { BloodRequest } from "../../requests/types/request.types";
-import type { BloodStock } from "../../stocks/types/stock.types";
-import { donorsService } from "../../donors/services/donors.service";
-import { requestsService } from "../../requests/services/requests.service";
-import { stocksService } from "../../stocks/services/stocks.service";
+import { api } from "../../../lib/axios";
+
+export interface AdminStatistics {
+  totalCentres: number;
+  totalDonors: number;
+  totalDons: number;
+  totalDemandes: number;
+  totalCollectes: number;
+  totalAlertes: number;
+  totalParticipations: number;
+  totalStock: number;
+}
+
+export interface CentreStatistics {
+  totalDonors: number;
+  verifiedUsers: number;
+  totalDons: number;
+  totalDemandes: number;
+  totalCollectes: number;
+  totalAlertes: number;
+  totalParticipations: number;
+  totalStock: number;
+  totalStaff: number;
+  totalStocksCritiques: number;
+}
+
+export interface StatisticsCharts {
+  bloodStock: {
+    group: string;
+    quantity: number;
+  }[];
+
+  donationsByGroup: {
+    group: string;
+    count: number;
+  }[];
+
+  donationsTrend: {
+    month: string;
+    count: number;
+  }[];
+
+  requestsTrend: {
+    month: string;
+    count: number;
+  }[];
+}
 
 export const statisticsService = {
-  async getDashboardStatistics() {
-    const [donors, requests, stocks] = await Promise.all([
-      donorsService.getAllDonors(),
-      requestsService.getAllRequests(),
-      stocksService.getAllStocks(),
-    ]);
+  async getAdminStatistics(): Promise<AdminStatistics> {
+    const response = await api.get("/statistics/admin");
 
-    return {
-      donors,
-      requests,
-      stocks,
-    };
+    return response.data.data;
   },
 
-  buildDonorsByGroup(donors: Donor[]) {
-    const map = new Map<string, number>();
+  async getCentreStatistics(): Promise<CentreStatistics> {
+    const response = await api.get("/statistics/centre");
 
-    donors.forEach((donor) => {
-      const group = donor.groupe_sanguin || "Non défini";
-      map.set(group, (map.get(group) || 0) + 1);
-    });
-
-    return Array.from(map.entries()).map(([group, count]) => ({
-      group,
-      count,
-    }));
+    return response.data.data;
   },
 
-  buildRequestsTrend(requests: BloodRequest[]) {
-    const map = new Map<string, number>();
-
-    requests.forEach((request) => {
-      const date = new Date(request.date_creation).toLocaleDateString("fr-FR");
-      map.set(date, (map.get(date) || 0) + 1);
-    });
-
-    return Array.from(map.entries()).map(([date, count]) => ({
-      date,
-      count,
-    }));
+  async getAdminCharts(): Promise<StatisticsCharts> {
+    const response = await api.get(
+      "/statistics/admin/charts"
+    );
+  
+    return response.data.data;
   },
-
-  getOverviewStats(
-    donors: Donor[],
-    requests: BloodRequest[],
-    stocks: BloodStock[]
-  ) {
-    return {
-      totalDonors: donors.length,
-      verifiedDonors: donors.filter(
-        (donor) => donor.statut_groupe_sanguin === "verifie"
-      ).length,
-      totalRequests: requests.length,
-      totalStock: stocks.reduce((sum, stock) => sum + stock.quantite, 0),
-    };
-  },
+  
+  async getCentreCharts(): Promise<StatisticsCharts> {
+    const response = await api.get(
+      "/statistics/centre/charts"
+    );
+  
+    return response.data.data;
+  }
 };

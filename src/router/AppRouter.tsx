@@ -10,7 +10,7 @@ import AlertsPage from "../features/alerts/pages/AlertsPage";
 import CollectesPage from "../features/collectes/pages/CollectesPage";
 import StocksPage from "../features/stocks/pages/StocksPage";
 import StatisticsPage from "../features/statistics/pages/StatisticsPage";
-import CreateStaffPage from "../features/staff-management/pages/CreateStaffPage";
+import CreateStaffPage from "../features/staff-management/pages/StaffListPage";
 import DonorDetailsPage from "../features/donors/pages/DonorDetailsPage";
 import NotificationsPage from "../features/notifications/pages/NotificationsPage";
 import ScanQrPage from "../features/donors/pages/ScanQrPage";
@@ -187,7 +187,7 @@ export default function AppRouter() {
         <Route
           path="/statistics"
           element={
-            <RoleGuard allowedRoles={[1, 4]}>
+            <RoleGuard allowedRoles={[1, 3, 4]}>
               <StatisticsPage />
             </RoleGuard>
           }

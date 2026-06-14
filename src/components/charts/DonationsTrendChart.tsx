@@ -1,8 +1,8 @@
 import {
-    Bar,
-    BarChart,
+    Area,
+    AreaChart,
     CartesianGrid,
-    Cell,
+    Line,
     ResponsiveContainer,
     Tooltip,
     XAxis,
@@ -11,23 +11,12 @@ import {
   
   type Props = {
     data: {
-      group: string;
+      month: string;
       count: number;
     }[];
   };
   
-  const COLORS = [
-    "#DC2626",
-    "#EF4444",
-    "#F87171",
-    "#FB7185",
-    "#E11D48",
-    "#BE123C",
-    "#B91C1C",
-    "#991B1B",
-  ];
-  
-  export default function DonationsChart({
+  export default function DonationsTrendChart({
     data,
   }: Props) {
     return (
@@ -35,19 +24,19 @@ import {
         <div className="flex items-center justify-between">
           <div>
             <h3 className="text-xl font-bold text-slate-900 dark:text-white">
-              Répartition des dons
+              Évolution des dons
             </h3>
   
             <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-              Distribution des dons selon les groupes sanguins
+              Tendance mensuelle des dons enregistrés
             </p>
           </div>
   
-          <div className="flex items-center gap-2 rounded-full bg-red-50 px-3 py-1 dark:bg-red-950/40">
-            <div className="h-2 w-2 rounded-full bg-red-500" />
+          <div className="flex items-center gap-2 rounded-full bg-emerald-50 px-3 py-1 dark:bg-emerald-950/40">
+            <div className="h-2 w-2 rounded-full bg-emerald-500" />
   
-            <span className="text-xs font-medium text-red-600 dark:text-red-400">
-              Dons enregistrés
+            <span className="text-xs font-medium text-emerald-600 dark:text-emerald-400">
+              Activité des dons
             </span>
           </div>
         </div>
@@ -57,7 +46,29 @@ import {
             width="100%"
             height="100%"
           >
-            <BarChart data={data}>
+            <AreaChart data={data}>
+              <defs>
+                <linearGradient
+                  id="donationsGradient"
+                  x1="0"
+                  y1="0"
+                  x2="0"
+                  y2="1"
+                >
+                  <stop
+                    offset="0%"
+                    stopColor="#16A34A"
+                    stopOpacity={0.35}
+                  />
+  
+                  <stop
+                    offset="100%"
+                    stopColor="#16A34A"
+                    stopOpacity={0}
+                  />
+                </linearGradient>
+              </defs>
+  
               <CartesianGrid
                 strokeDasharray="3 3"
                 stroke="rgba(148,163,184,0.15)"
@@ -65,7 +76,7 @@ import {
               />
   
               <XAxis
-                dataKey="group"
+                dataKey="month"
                 axisLine={false}
                 tickLine={false}
                 tick={{
@@ -84,9 +95,6 @@ import {
               />
   
               <Tooltip
-                cursor={{
-                  fill: "rgba(220,38,38,0.06)",
-                }}
                 contentStyle={{
                   borderRadius: "16px",
                   border: "1px solid rgba(255,255,255,0.08)",
@@ -97,23 +105,31 @@ import {
                 }}
               />
   
-              <Bar
+              <Area
+                type="monotone"
                 dataKey="count"
-                radius={[12, 12, 0, 0]}
+                stroke="none"
+                fill="url(#donationsGradient)"
                 animationDuration={1200}
-              >
-                {data.map((_, index) => (
-                  <Cell
-                    key={index}
-                    fill={
-                      COLORS[
-                        index % COLORS.length
-                      ]
-                    }
-                  />
-                ))}
-              </Bar>
-            </BarChart>
+              />
+  
+              <Line
+                type="monotone"
+                dataKey="count"
+                stroke="#16A34A"
+                strokeWidth={4}
+                dot={{
+                  r: 4,
+                  fill: "#16A34A",
+                  strokeWidth: 0,
+                }}
+                activeDot={{
+                  r: 7,
+                  fill: "#16A34A",
+                }}
+                animationDuration={1200}
+              />
+            </AreaChart>
           </ResponsiveContainer>
         </div>
       </div>

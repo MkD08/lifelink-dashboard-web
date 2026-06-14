@@ -1,4 +1,11 @@
 import { useEffect, useState } from "react";
+import {
+  Activity,
+  ClipboardList,
+  // QrCode,
+  Users,
+} from "lucide-react";
+
 import { useNavigate } from "react-router-dom";
 import { requestsService } from "../../requests/services/requests.service";
 import { donorsService } from "../../donors/services/donors.service";
@@ -9,7 +16,8 @@ import type { Donor } from "../../donors/types/donor.types";
 export default function StaffDashboardPage() {
   const [loading, setLoading] = useState(true);
 
-  const [requests, setRequests] = useState<BloodRequest[]>([]);
+  const [requests, setRequests] =
+    useState<BloodRequest[]>([]);
 
   const [stats, setStats] = useState({
     demandesUrgentes: 0,
@@ -19,34 +27,38 @@ export default function StaffDashboardPage() {
 
   const navigate = useNavigate();
 
-  // ==============================
-  // LOAD DATA
-  // ==============================
   const load = async () => {
     try {
       setLoading(true);
 
-      const demandes = await requestsService.getAllRequests();
+      const demandes =
+        await requestsService.getAllRequests();
+
       setRequests(demandes);
 
-      const demandesUrgentes = demandes.filter(
-        (d) => d.statut === "EN_ATTENTE"
-      ).length;
+      const demandesUrgentes =
+        demandes.filter(
+          (d) => d.statut === "EN_ATTENTE"
+        ).length;
 
       let donneursData: Donor[] = [];
 
       try {
-        donneursData = await donorsService.getAllDonors();
-        
+        donneursData =
+          await donorsService.getAllDonors();
       } catch {
         donneursData = [];
       }
 
-      const donneursDisponibles = donneursData.length;
+      const donneursDisponibles =
+        donneursData.length;
 
-      const groupesAVerifier = donneursData.filter(
-        (d) => d.statut_groupe_sanguin !== "verifie"
-      ).length;
+      const groupesAVerifier =
+        donneursData.filter(
+          (d) =>
+            d.statut_groupe_sanguin !==
+            "verifie"
+        ).length;
 
       setStats({
         demandesUrgentes,
@@ -62,125 +74,194 @@ export default function StaffDashboardPage() {
     load();
   }, []);
 
-  // ==============================
-  // 🔥 UI
-  // ==============================
   return (
-    <div className="space-y-6">
-
+    <div className="space-y-8">
       {/* HEADER */}
-      <div className="rounded-[24px] border border-slate-200 bg-white dark:bg-slate-900 p-6 shadow-md">
-        <h2 className="text-2xl font-extrabold text-slate-900 dark:text-white">
-          Dashboard Staff
-        </h2>
-        <p className="mt-2 text-slate-500">
-          Vue globale des opérations et accès rapide aux actions.
-        </p>
+      <div className="overflow-hidden rounded-[32px] border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-lg">
+        <div className="h-1 bg-gradient-to-r from-red-600 via-red-500 to-rose-500" />
+
+        <div className="p-8">
+          <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+            <div className="flex items-center gap-4">
+              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-red-50 dark:bg-red-950/30">
+                <Activity
+                  size={28}
+                  className="text-red-600"
+                />
+              </div>
+
+              <div>
+                <h2 className="text-3xl font-black tracking-tight text-slate-900 dark:text-white">
+                  Dashboard Staff
+                </h2>
+
+                <p className="mt-1 text-slate-500 dark:text-slate-400">
+                  Gestion opérationnelle et suivi
+                  des activités du centre.
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2 rounded-full bg-emerald-50 px-4 py-2 dark:bg-emerald-950/30">
+              <div className="h-2.5 w-2.5 animate-pulse rounded-full bg-emerald-500" />
+
+              <span className="text-sm font-medium text-emerald-700 dark:text-emerald-400">
+                Activité en cours
+              </span>
+            </div>
+          </div>
+        </div>
       </div>
 
-      {/* STATS */}
-      <div className="grid gap-4 md:grid-cols-3">
+      {/* KPI */}
+      <div className="grid gap-5 md:grid-cols-3">
+        <StatCard
+          title="Demandes en attente"
+          value={stats.demandesUrgentes}
+          loading={loading}
+          color="from-orange-500 to-orange-600"
+          icon={<ClipboardList size={22} />}
+        />
 
-        <div className="rounded-[24px] bg-white dark:bg-slate-900 p-5 shadow-md border border-slate-200">
-          <p className="text-sm text-slate-500">Demandes en attente</p>
-          <h3 className="mt-2 text-3xl font-extrabold text-slate-900 dark:text-white">
-            {loading ? "..." : stats.demandesUrgentes}
-          </h3>
-        </div>
+        <StatCard
+          title="Donneurs disponibles"
+          value={stats.donneursDisponibles}
+          loading={loading}
+          color="from-cyan-500 to-cyan-600"
+          icon={<Users size={22} />}
+        />
 
-        <div className="rounded-[24px] bg-white dark:bg-slate-900 p-5 shadow-md border border-slate-200">
-          <p className="text-sm text-slate-500">Donneurs disponibles</p>
-          <h3 className="mt-2 text-3xl font-extrabold text-slate-900 dark:text-white">
-            {loading ? "..." : stats.donneursDisponibles}
-          </h3>
-        </div>
-
-        <div className="rounded-[24px] bg-white dark:bg-slate-900 p-5 shadow-md border border-slate-200">
-          <p className="text-sm text-slate-500">Groupes à vérifier</p>
-          <h3 className="mt-2 text-3xl font-extrabold text-slate-900 dark:text-white">
-            {loading ? "..." : stats.groupesAVerifier}
-          </h3>
-        </div>
-
+        <StatCard
+          title="Groupes à vérifier"
+          value={stats.groupesAVerifier}
+          loading={loading}
+          color="from-red-500 to-red-600"
+          icon={<Activity size={22} />}
+        />
       </div>
 
-      {/* ACTIONS RAPIDES */}
-      <div className="rounded-[24px] border border-slate-200 bg-white dark:bg-slate-900 p-6 shadow-md">
-        <h3 className="text-lg font-extrabold text-slate-900 dark:text-white">
+      {/* ACTIONS */}
+      <div className="rounded-[28px] border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-lg">
+        <h3 className="text-xl font-bold text-slate-900 dark:text-white">
           Actions rapides
         </h3>
 
-        <div className="mt-4 flex flex-wrap gap-3">
-
+        <div className="mt-6 flex flex-wrap gap-3">
           <button
             onClick={() => navigate("/scan-qr")}
-            className="rounded-2xl bg-red-600 px-4 py-3 font-bold text-white hover:bg-red-700"
+            className="rounded-2xl bg-red-600 px-5 py-3 font-semibold text-white transition hover:bg-red-700"
           >
             Scanner QR
           </button>
 
           <button
             onClick={() => navigate("/requests")}
-            className="rounded-2xl border border-slate-300 px-4 py-3 font-semibold text-slate-700 hover:bg-slate-50"
+            className="rounded-2xl border border-slate-300 dark:border-slate-700 px-5 py-3 font-semibold text-slate-700 dark:text-slate-300 transition hover:bg-slate-50 dark:hover:bg-slate-800"
           >
             Voir demandes
           </button>
 
           <button
             onClick={() => navigate("/collectes")}
-            className="rounded-2xl border border-slate-300 px-4 py-3 font-semibold text-slate-700 hover:bg-slate-50"
+            className="rounded-2xl border border-slate-300 dark:border-slate-700 px-5 py-3 font-semibold text-slate-700 dark:text-slate-300 transition hover:bg-slate-50 dark:hover:bg-slate-800"
           >
             Voir collectes
           </button>
-
         </div>
       </div>
 
       {/* DEMANDES RÉCENTES */}
-      <div className="rounded-[24px] border border-slate-200 bg-white dark:bg-slate-900 p-6 shadow-md">
-        <h3 className="text-lg font-extrabold text-slate-900 dark:text-white">
+      <div className="rounded-[28px] border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-lg">
+        <h3 className="text-xl font-bold text-slate-900 dark:text-white">
           Demandes récentes
         </h3>
 
         {loading ? (
-          <p className="mt-4 text-slate-500">Chargement...</p>
+          <p className="mt-4 text-slate-500">
+            Chargement...
+          </p>
         ) : requests.length === 0 ? (
           <p className="mt-4 text-slate-500">
             Aucune demande disponible
           </p>
         ) : (
-          <div className="mt-4 space-y-3">
-
+          <div className="mt-6 space-y-3">
             {requests.slice(0, 5).map((req) => (
               <div
                 key={req.id_demande}
-                className="flex items-center justify-between rounded-2xl border border-slate-200 px-4 py-3 dark:border-slate-700"
+                className="flex items-center justify-between rounded-2xl border border-slate-200 dark:border-slate-700 px-4 py-4"
               >
                 <div>
                   <p className="font-semibold text-slate-900 dark:text-white">
-                    {req.groupe_sanguin} - {req.ville}
+                    {req.groupe_sanguin} -{" "}
+                    {req.ville}
                   </p>
+
                   <p className="text-sm text-slate-500">
-                    {new Date(req.date_creation).toLocaleDateString()}
+                    {new Date(
+                      req.date_creation
+                    ).toLocaleDateString()}
                   </p>
                 </div>
 
                 <span
                   className={`rounded-xl px-3 py-1 text-sm font-semibold ${
                     req.statut === "VALIDE"
-                      ? "bg-green-100 text-green-700"
-                      : "bg-yellow-100 text-yellow-700"
+                      ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
+                      : "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400"
                   }`}
                 >
                   {req.statut}
                 </span>
               </div>
             ))}
-
           </div>
         )}
       </div>
+    </div>
+  );
+}
 
+type StatCardProps = {
+  title: string;
+  value: number;
+  loading: boolean;
+  icon: React.ReactNode;
+  color: string;
+};
+
+function StatCard({
+  title,
+  value,
+  loading,
+  icon,
+  color,
+}: StatCardProps) {
+  return (
+    <div className="group relative overflow-hidden rounded-[28px] border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl">
+      <div
+        className={`absolute inset-x-0 top-0 h-1 bg-gradient-to-r ${color}`}
+      />
+
+      <div className="flex items-start justify-between">
+        <div>
+          <p className="text-sm font-medium text-slate-500 dark:text-slate-400">
+            {title}
+          </p>
+
+          <h3 className="mt-3 text-4xl font-black tracking-tight text-slate-900 dark:text-white">
+            {loading
+              ? "..."
+              : value.toLocaleString()}
+          </h3>
+        </div>
+
+        <div
+          className={`flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br ${color} text-white shadow-lg`}
+        >
+          {icon}
+        </div>
+      </div>
     </div>
   );
 }

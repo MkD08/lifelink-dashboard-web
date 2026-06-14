@@ -157,6 +157,10 @@ export default function Sidebar({
       label: "Utilisateurs vérifiés",
       path: "/verified-users",
     },
+    {
+      label: "Statistiques",
+      path: "/statistics",
+    },
   ];
 
   // ==============================
