@@ -1,6 +1,10 @@
+import { useLocation } from "react-router-dom";
 import ScanQrCard from "../components/ScanQrCard";
-
 export default function ScanQrPage() {
+  const location = useLocation();
+
+const mode =
+  location.state?.mode ?? "donation";
   return (
     <div className="space-y-6">
       <div className="rounded-[24px] border border-slate-200 bg-white dark:bg-slate-900 p-6 shadow-md">
@@ -12,7 +16,7 @@ export default function ScanQrPage() {
         </p>
       </div>
 
-      <ScanQrCard />
+      <ScanQrCard mode={mode} />
     </div>
   );
 }

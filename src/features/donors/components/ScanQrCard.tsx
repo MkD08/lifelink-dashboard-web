@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import { Html5Qrcode } from "html5-qrcode";
 
@@ -14,10 +15,20 @@ import { useToast } from "../../auth/store/toast.store";
 
 import { useAuth } from "../../auth/store/auth.store";
 
-export default function ScanQrCard() {
+type ScanMode = "donation" | "receipt";
+
+type Props = {
+  mode?: ScanMode;
+};
+
+export default function ScanQrCard({
+  mode = "donation",
+}: Props) {
   const { user } = useAuth();
 
   const { showToast } = useToast();
+
+  const navigate = useNavigate();
 
   const scannerRef =
     useRef<any>(null);
@@ -39,6 +50,8 @@ export default function ScanQrCard() {
 
   const [cameraOpen, setCameraOpen] =
     useState(false);
+  
+
 
   // =========================
   // AUTO CENTRE ID
@@ -50,6 +63,14 @@ export default function ScanQrCard() {
       );
     }
   }, [user]);
+
+  useEffect(() => {
+    startScanner();
+  
+    return () => {
+      stopScanner();
+    };
+  }, []);
 
   const isStaffOrDirector =
     user?.role_id === 3 ||
@@ -168,20 +189,37 @@ export default function ScanQrCard() {
 
       try {
         setLoading(true);
-
+      
         console.log(
           "🚀 SEND QR:",
           qr || qrData
         );
+      
+        if (mode === "receipt") {
 
+          const receipt =
+            await donorsService.verifyReceipt(
+              (qr || qrData).trim()
+            );
+        
+          showToast(
+            "Reçu vérifié avec succès",
+            "success"
+          );
+                  
+          navigate("/requests", {
+            state: {
+              demandeId: receipt.demandeId,
+            },
+          });
+        
+          return;
+        }
+      
         const data =
           await donorsService.scanQr(
-            qr ||
-              qrData.trim(),
-
-            Number(
-              centreId
-            )
+            qr || qrData.trim(),
+            Number(centreId)
           );
 
         console.log(

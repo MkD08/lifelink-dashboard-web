@@ -149,4 +149,34 @@ export const donorsService = {
       throw new Error("Impossible de scanner le QR");
     }
   },
+
+  async verifyReceipt(token: string): Promise<any> {
+    try {
+      const response = await api.post("/dons/receipt/verify", {
+        token,
+      });
+
+      if (response.data?.success === false) {
+        throw new Error(
+          response.data?.message || "Impossible de vérifier le reçu"
+        );
+      }
+
+      return response.data;
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        throw new Error(
+          error.response?.data?.message ||
+            error.message ||
+            "Impossible de vérifier le reçu"
+        );
+      }
+
+      if (error instanceof Error) {
+        throw error;
+      }
+
+      throw new Error("Impossible de vérifier le reçu");
+    }
+  },
 };

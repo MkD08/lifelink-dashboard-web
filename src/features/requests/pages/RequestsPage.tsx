@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react";
-
+import {
+  useNavigate,
+  useLocation,
+} from "react-router-dom";
 import { requestsService } from "../services/requests.service";
 
 import { useToast } from "../../auth/store/toast.store";
@@ -51,6 +54,13 @@ export default function RequestsPage() {
     useState(true);
 
   const { showToast } = useToast();
+
+  const navigate = useNavigate();
+
+  const location = useLocation();
+
+const demandeId =
+  location.state?.demandeId;
 
   const handleDelivrer =
   async (id_demande: number) => {
@@ -164,6 +174,13 @@ export default function RequestsPage() {
         ).toLocaleDateString(),
     },
   ];
+  const displayedRequests =
+  demandeId
+    ? requests.filter(
+        (r) =>
+          r.id_demande === demandeId
+      )
+    : requests;
 
   return (
 
@@ -180,6 +197,18 @@ export default function RequestsPage() {
         <p className="mt-2 text-slate-500 dark:text-slate-400">
           Consultez les demandes de sang de votre centre.
         </p>
+                <button
+          onClick={() =>
+            navigate("/scan-qr", {
+              state: {
+                mode: "receipt",
+              },
+            })
+          }
+          className="rounded-2xl bg-blue-600 px-4 py-2 font-semibold text-white hover:bg-blue-700"
+        >
+          Scanner un reçu
+        </button>
 
         {/* EXPORTS */}
 
@@ -241,7 +270,7 @@ export default function RequestsPage() {
 
         <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
 
-          {requests.map((req) => (
+{displayedRequests.map((req) => (
 
             <div
               key={req.id_demande}
