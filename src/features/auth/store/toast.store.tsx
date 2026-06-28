@@ -2,10 +2,12 @@ import {
     createContext,
     useCallback,
     useContext,
+    useEffect,
     useMemo,
     useState,
   } from "react";
   import Toast from "../../../components/common/Toast";
+  import { registerToastHandler } from "../../../services/toast.service";
   
   type ToastType = "success" | "error" | "info";
   
@@ -38,6 +40,9 @@ import {
     );
   
     const value = useMemo(() => ({ showToast }), [showToast]);
+    useEffect(() => {
+      registerToastHandler(showToast);
+    }, [showToast]);
   
     return (
       <ToastContext.Provider value={value}>

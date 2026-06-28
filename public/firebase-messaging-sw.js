@@ -10,30 +10,25 @@ firebase.initializeApp({
   appId: "1:220814183760:web:9bd4bff4af59831272f055", // pas la vraie
 });
 
-// ===== AJOUTER ICI =====
-console.log("🔥 Firebase Service Worker chargé");
-
-self.addEventListener("push", (event) => {
-    console.log("🔥 PUSH EVENT");
-  
-    if (event.data) {
-      console.log("DATA :", event.data.text());
-  
-      try {
-        console.log("JSON :", event.data.json());
-      } catch (e) {
-        console.log("Impossible de parser le JSON");
-      }
-    }
-  });
-
 self.addEventListener("notificationclick", (event) => {
-  console.log("🔥 Notification cliquée :", event);
-});
+    event.notification.close();
+  
+    event.waitUntil(
+      clients.openWindow("/")
+    );
+  });
 // =======================
 
 const messaging = firebase.messaging();
 
 messaging.onBackgroundMessage((payload) => {
-    console.log("BACKGROUND PAYLOAD :", payload);
+    const notification = payload.notification;
+  
+    if (!notification) return;
+  
+    self.registration.showNotification(notification.title, {
+      body: notification.body,
+      icon: notification.icon || "/logo.png",
+      badge: notification.badge || "/logo.png",
+    });
   });

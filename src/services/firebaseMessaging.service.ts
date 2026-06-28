@@ -1,6 +1,7 @@
 import { getToken, onMessage } from "firebase/messaging";
 import { api } from "../lib/axios";
 import { messaging, VAPID_KEY } from "../firebase";
+import { showGlobalToast } from "./toast.service";
 
 
 class FirebaseMessagingService {
@@ -28,15 +29,15 @@ const token = await getToken(messaging, {
 });
 
       if (!token) {
-        console.warn("Aucun token FCM obtenu.");
+       
         return null;
       }
 
-      console.log("Token FCM Web :", token);
+    
 
       return token;
     } catch (error) {
-      console.error("Erreur Firebase Messaging :", error);
+      
       return null;
     }
   }
@@ -52,7 +53,6 @@ const token = await getToken(messaging, {
         token,
       });
   
-      console.log("✅ Token Web enregistré.");
     } catch (error) {
       console.error(
         "Erreur lors de l'enregistrement du token :",
@@ -60,28 +60,20 @@ const token = await getToken(messaging, {
       );
     }
   }
-  /**
-   * Écoute des notifications lorsque
-   * le dashboard est ouvert.
-   */
-  onForegroundMessage() {
+ /**
+ * Écoute des notifications lorsque
+ * le dashboard est ouvert.
+ */
+onForegroundMessage() {
     return onMessage(messaging, (payload) => {
-        console.log("Notification reçue :", payload);
-        console.log("Titre :", payload.notification?.title);
-        console.log("Message :", payload.notification?.body);
+      const title = payload.notification?.title ?? "LifeLink";
+      const body = payload.notification?.body;
   
-      const { title, body } = payload.notification || {};
-  
-      if (Notification.permission === "granted") {
-        navigator.serviceWorker.ready.then((registration) => {
-            registration.showNotification(title || "LifeLink", {
-              body: body || "",
-              icon: "/logo.png",
-            });
-          });
+      if (body) {
+        showGlobalToast(`${title}\n${body}`, "info");
       }
     });
   }
-}
-
-export default new FirebaseMessagingService();
+  }
+  
+  export default new FirebaseMessagingService();
