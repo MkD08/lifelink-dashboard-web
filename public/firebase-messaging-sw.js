@@ -14,15 +14,18 @@ firebase.initializeApp({
 console.log("🔥 Firebase Service Worker chargé");
 
 self.addEventListener("push", (event) => {
-    console.log("🔥 PUSH EVENT :", event);
+    console.log("🔥 PUSH EVENT");
   
-    event.waitUntil(
-      self.registration.showNotification("TEST PUSH", {
-        body: "Le push est bien arrivé.",
-        icon: "/logo.png",
-      })
-    );
-  });;
+    if (event.data) {
+      console.log("DATA :", event.data.text());
+  
+      try {
+        console.log("JSON :", event.data.json());
+      } catch (e) {
+        console.log("Impossible de parser le JSON");
+      }
+    }
+  });
 
 self.addEventListener("notificationclick", (event) => {
   console.log("🔥 Notification cliquée :", event);
@@ -32,19 +35,5 @@ self.addEventListener("notificationclick", (event) => {
 const messaging = firebase.messaging();
 
 messaging.onBackgroundMessage((payload) => {
-  console.log("[firebase-messaging-sw.js] Notification reçue :", payload);
-
-  const notificationTitle =
-    payload.notification?.title || "LifeLink";
-
-  const notificationOptions = {
-    body: payload.notification?.body || "",
-    icon: "/logo.png",
-    badge: "/logo.png",
-  };
-
-  self.registration.showNotification(
-    notificationTitle,
-    notificationOptions
-  );
-});
+    console.log("BACKGROUND PAYLOAD :", payload);
+  });
