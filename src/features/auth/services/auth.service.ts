@@ -3,6 +3,7 @@ import { API_ENDPOINTS } from "../../../config/api-endpoints";
 import { api } from "../../../lib/axios";
 import { storage } from "../../../lib/storage";
 import type { LoginOfficeResponse, User } from "../types/auth.types";
+import FirebaseMessagingService from "../../../services/firebaseMessaging.service";
 
 export const authService = {
   async login(email: string, password: string) {
@@ -34,7 +35,13 @@ export const authService = {
 
       storage.setToken(accessToken);
       storage.setUser(user);
-
+      
+      // Enregistre le token FCM Web après connexion
+      await FirebaseMessagingService.registerDevice();
+      // FirebaseMessagingService.registerDevice().catch((error) => {
+      //   console.error("Erreur d'enregistrement FCM :", error);
+      // });
+      
       return { user, accessToken };
     } catch (error) {
       if (error instanceof AxiosError) {
