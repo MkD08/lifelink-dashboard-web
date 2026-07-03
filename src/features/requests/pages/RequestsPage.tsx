@@ -53,6 +53,9 @@ export default function RequestsPage() {
   const [loading, setLoading] =
     useState(true);
 
+
+  const [deliveringId, setDeliveringId] =
+    useState<number | null>(null);  
   const { showToast } = useToast();
 
   const navigate = useNavigate();
@@ -62,30 +65,36 @@ export default function RequestsPage() {
 const demandeId =
   location.state?.demandeId;
 
-  const handleDelivrer =
-  async (id_demande: number) => {
+  const handleDelivrer = async (id_demande: number) => {
 
+    if (deliveringId === id_demande) return;
+  
+    setDeliveringId(id_demande);
+  
     try {
-
-      await requestsService
-        .delivrerRequest(
-          id_demande
-        );
-
+  
+      await requestsService.delivrerRequest(
+        id_demande
+      );
+  
       showToast(
         "Poche remise au patient",
         "success"
       );
-
+  
       await loadRequests();
-
+  
     } catch (err: any) {
-
+  
       showToast(
-        err.message ||
-        "Erreur",
+        err.message || "Erreur",
         "error"
       );
+  
+    } finally {
+  
+      setDeliveringId(null);
+  
     }
   };
 
@@ -260,7 +269,7 @@ const demandeId =
           Chargement...
         </div>
 
-      ) : requests.length === 0 ? (
+) : displayedRequests.length === 0 ? (
 
         <div className="rounded-[24px] border border-slate-200 bg-white p-6 text-center text-slate-500 shadow-md dark:border-slate-700 dark:bg-slate-900 dark:text-slate-400">
           Aucune demande disponible
@@ -387,9 +396,15 @@ const demandeId =
       req.id_demande
     )
   }
+  disabled={
+    deliveringId === req.id_demande
+  }
   className="
     mt-4
+    flex
     w-full
+    items-center
+    justify-center
     rounded-xl
     bg-emerald-600
     px-4
@@ -397,9 +412,38 @@ const demandeId =
     font-semibold
     text-white
     hover:bg-emerald-700
+    disabled:cursor-not-allowed
+    disabled:opacity-60
   "
 >
-  Remettre au patient
+  {deliveringId === req.id_demande ? (
+    <>
+      <svg
+        className="mr-2 h-5 w-5 animate-spin"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+      >
+        <circle
+          className="opacity-25"
+          cx="12"
+          cy="12"
+          r="10"
+          stroke="currentColor"
+          strokeWidth="4"
+        />
+        <path
+          className="opacity-75"
+          fill="currentColor"
+          d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+        />
+      </svg>
+
+      Remise...
+    </>
+  ) : (
+    "Remettre au patient"
+  )}
 </button>
 )}
 

@@ -34,7 +34,7 @@ export default function Sidebar({
   const adminItems: NavItem[] = [
 
     {
-      label: "Dashboard",
+      label: "Tableau de bord",
       path: "/admin/dashboard",
     },
 
@@ -110,7 +110,7 @@ export default function Sidebar({
   const staffItems: NavItem[] = [
 
     {
-      label: "Dashboard",
+      label: "Tableau de bord",
       path: "/staff/dashboard",
     },
 
@@ -169,12 +169,12 @@ export default function Sidebar({
   const directorItems: NavItem[] = [
 
     {
-      label: "Dashboard",
+      label: "Tableau de bord",
       path: "/director/dashboard",
     },
 
     {
-      label: "Créer Staff",
+      label: "Création Staff",
       path: "/create-staff",
     },
 
@@ -286,7 +286,7 @@ export default function Sidebar({
               </h2>
 
               <p className="text-sm text-slate-500">
-                Dashboard Web
+              Tableau de bord
               </p>
             </div>
           </div>
@@ -296,7 +296,7 @@ export default function Sidebar({
 
             <button
               onClick={onClose}
-              className="rounded-xl p-2 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 lg:hidden"
+             className="rounded-xl p-2 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 lg:hidden"
             >
               <X size={20} />
             </button>

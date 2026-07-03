@@ -77,7 +77,7 @@ export default function DirectorDashboardPage() {
 
               <div>
                 <h2 className="text-3xl font-black tracking-tight text-slate-900 dark:text-white">
-                  Dashboard Directeur
+                Tableau de bord Directeur
                 </h2>
 
                 <p className="mt-1 text-slate-500 dark:text-slate-400">

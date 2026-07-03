@@ -188,7 +188,7 @@ export default function DonorDetailsPage() {
 
         <div className="rounded-[24px] bg-white dark:bg-slate-900 p-5 shadow-md border border-slate-200">
           <p className="text-sm text-slate-500">QR code</p>
-          <h3 className="mt-2 text-lg font-bold text-slate-900 dark:text-white">
+          <h3 className="mt-2 text-lg font-bold text-slate-900 dark:text-white break-all">
             {donor.qr_code || "Non généré"}
           </h3>
         </div>
